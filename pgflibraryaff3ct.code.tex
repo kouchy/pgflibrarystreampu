@@ -103,8 +103,8 @@
 \newcommand{\scksize}{0.3cm}
 \newcommand{\sckspace}{0.5cm}
 
-\tikzset{ task/.style   = {draw=Paired-1,  rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize} }
-\tikzset{ stask/.style  = {draw=Paired-1,  rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize, fill=Paired-1!20} }
+\tikzset{ task/.style   = {draw=Paired-1,  rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize, inner sep=0.3cm} }
+\tikzset{ stask/.style  = {draw=Paired-1,  rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize, inner sep=0.3cm, fill=Paired-1!20} }
 \tikzset{ seq/.style    = {draw=Paired-11, rounded corners=2pt, densely dashed} }
 \tikzset{ subseq/.style = {draw=Paired-9,  rounded corners=2pt} }
 \tikzset{ pip/.style    = {draw=Dark2-8,   dotted, thick, rounded corners=2pt} }
@@ -161,32 +161,44 @@
     }
   }
 
+  % compute minimum height
+  \pgfmathtruncatemacro{\sckitotdst}{(\nscki + \nsckf - 1) * (\sckspace - \scksize) + (\nscki + \nsckf) * \scksize + 0.15cm}
+  \pgfmathtruncatemacro{\sckototdst}{(\nscko + \nsckf - 1) * (\sckspace - \scksize) + (\nscko + \nsckf) * \scksize + 0.15cm}
+
+  \ifnum \numexpr\sckitotdst > \sckototdst
+    \pgfmathtruncatemacro{\tskminheight}{\sckitotdst}
+  \else
+    \pgfmathtruncatemacro{\tskminheight}{\sckototdst}
+  \fi
+
+  \pgfmathtruncatemacro{\tskminsizebis}{\tskminsize}
+  \ifnum \numexpr\tskminheight > \tskminsizebis
+    \pgfmathtruncatemacro{\tskrealminheight}{\tskminheight}
+  \else
+    \pgfmathtruncatemacro{\tskrealminheight}{\tskminsizebis}
+  \fi
+
   % draw task
   \def\tskpos{#3}
   \ifthenelse{\equal{\tskpos}{\string "nopos"}} {
     \ifthenelse{\equal{#1}{\string "noopt"}} {
-      \node[\tskstyle, align=center] (\tskid) {\tsklabl};
+      \node[\tskstyle, align=center, minimum height=\tskrealminheight] (\tskid) {\tsklabl};
     }{
-      \node[\tskstyle, align=center, #1] (\tskid) {\tsklabl};
+      \node[\tskstyle, align=center, minimum height=\tskrealminheight, #1] (\tskid) {\tsklabl};
     }
   }{
     \pgfmathsetmacro{\tskposx}{{#3}[0]}
     \pgfmathsetmacro{\tskposy}{{#3}[1]}
     \ifthenelse{\equal{#1}{\string "noopt"}} {
-      \node[\tskstyle, align=center] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
+      \node[\tskstyle, align=center, minimum height=\tskrealminheight] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
     }{
-      \node[\tskstyle, align=center, #1] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
+      \node[\tskstyle, align=center, minimum height=\tskrealminheight, #1] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
     }
   }
 
-  % draw sockets
+  % draw input (+ fwd) socket
   \pgfmathtruncatemacro{\sckitotsize}{(\nscki + \nsckf - 1) * \sckspace}
   \pgfmathtruncatemacro{\sckiinishft}{(\sckitotsize / 2)}
-
-  \pgfmathtruncatemacro{\sckototsize}{(\nscko + \nsckf - 1) * \sckspace}
-  \pgfmathtruncatemacro{\sckoinishft}{(\sckototsize / 2)}
-
-  % input (+ fwd) socket
   \pgfmathtruncatemacro{\nsckif}{\nscki + \nsckf}
   \ifnum \numexpr\nsckif > 0
     \pgfmathtruncatemacro{\nsckifmone}{\nscki + \nsckf - 1}
@@ -201,7 +213,9 @@
     }
   \fi
 
-  % output (+ fwd) socket
+  % draw output (+ fwd) socket
+  \pgfmathtruncatemacro{\sckototsize}{(\nscko + \nsckf - 1) * \sckspace}
+  \pgfmathtruncatemacro{\sckoinishft}{(\sckototsize / 2)}
   \pgfmathtruncatemacro{\nsckof}{\nscko + \nsckf}
   \ifnum \numexpr\nsckof > 0
     \pgfmathtruncatemacro{\nsckofmone}{\nscko + \nsckf - 1}
