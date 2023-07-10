@@ -6,11 +6,14 @@
 \begin{document}
   \begin{tikzpicture}
     % create the tasks
-    \task{"noopt"}{t1}{0, 0}{$t_1$}{0}{2}{0};
-    \task{right=1cm of t1}{t2}{"nopos"}{$t_2$}{1}{0}{1};
-    \task{right=1cm of t2}{t3}{"nopos"}{$t_3$}{1}{1}{0};
-    \task{right=1cm of t3, minimum width=1.75cm, minimum height=1.25cm}{t4}{"nopos"}{big task\\($t_4$)}{2}{3}{0};
-    \task{right=1cm of t4}{t5}{"nopos"}{$t_5$}{2}{0}{0};
+    \task{"noopt"}{t1}{0, 0}{$t_1$}{0}{2}{0}{"seq"};
+    \task{right=1cm of t1}{t2}{"nopos"}{$t_2$}{1}{0}{1}{"noattr"};
+    \task{right=1cm of t2}{t3}{"nopos"}{$t_3$}{1}{1}{0}{"noattr"};
+    \task{right=1cm of t3, minimum width=1.75cm, minimum height=1.25cm}{t4}{"nopos"}{big task\\($t_4$)}{2}{3}{0}{"seq"};
+    \task{right=1cm of t4}{t5}{"nopos"}{$t_5$}{2}{1}{0}{"noattr"};
+    \task{below=2.5cm of t5, xshift=-2cm}{t6}{"nopos"}{$t_6$}{2}{3}{0}{"rev","seq"};
+    \task{minimum width=1.25cm, minimum height=1.5cm, left=1cm of t6}{t7}{"nopos"}{$t_\text{fwd}$}{1}{0}{2}{"rev"};
+    \task{left=1cm of t7}{t8}{"nopos"}{$t_\text{8}$}{2}{0}{0}{"rev"};
 
     % create the modules
     \module{"noopt"}{"t1"}{m1}{$M_1$};
@@ -25,16 +28,24 @@
     \draw[bind] (t3_so1) --++ (0.5,0) |- (t4_si2);
     \draw[bind] (t4_so1) --++ (0.5,0) |- (t5_si1);
     \draw[bind] (t4_so3) --++ (0.5,0) |- (t5_si2);
+    \draw[bind] (t4_so2) --++ (0.65,0) |- (t6_si1);
+    \draw[bind] (t5_so1) --++ (0.5,0) |- (t6_si2);
+    \draw[bind] (t6_so1) -- (t7_si1);
+    \draw[bind] (t6_so2) -- (t7_si2);
+    \draw[bind] (t6_so3) -- (t7_si3);
+    \draw[bind] (t7_so1) -- (t8_si1);
+    \draw[bind] (t7_so2) -- (t8_si2);
 
     % create the sequences (= pipeline stages)
     \sequence{minimum height=3.0cm}{"m1","m2","t3"}{s1}{Stage 1}
     \sequence{minimum width=4.5cm, minimum height=3.0cm}{"t4","t5"}{s2}{Stage 2}
+    \sequence{minimum width=6cm, minimum height=2.25cm}{"t6","t7","t8"}{s2}{Stage 3}
 
     % draw the legend
     \legend{(-1.00,1.25)}
 
     % bonus: draw some threads
     \thread{(-1,-0.25)}{0.5}{th1};
-    \thread{(9.75,-0.25)}{0.5}{th2};
+    % \thread{(9.75,-0.25)}{0.5}{th2};
   \end{tikzpicture}
 \end{document}

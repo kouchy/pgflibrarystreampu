@@ -1,6 +1,3 @@
-% TODO:
-% - task attributes: "rev", "seq"
-
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
@@ -125,7 +122,8 @@
 % #5 number of input sockets (can be 0)
 % #6 number of output sockets (can be 0)
 % #7 number of forward sockets (can be 0)
-\newcommand{\task}[7]{
+% #8 a list of attributes (can be {"rev", "seq", "noattr"})
+\newcommand{\task}[8]{
   % parse arguments
   \def\tskid{#2}
   \def\tsklabl{#4}
@@ -133,21 +131,51 @@
   \pgfmathsetmacro{\nscko}{#6}
   \pgfmathsetmacro{\nsckf}{#7}
 
+  % parse arguments
+  \def\tsksiside{west}
+  \def\tsksoside{east}
+  \def\tskisrev{no}
+  \def\tskstyle{task}
+  \def\tskisseq{no}
+  \pgfmathsetmacro{\nattr}{dim(#8)}
+  \pgfmathsetmacro{\nattrmone}{int(\nattr - 1)}
+  \foreach \i in {0,...,\nattrmone}{
+    \ifthenelse{\nattrmone=0}{
+      \pgfmathsetmacro{\curattr}{#8}
+    }{
+      \pgfmathsetmacro{\curattr}{{#8}[\i]}
+    }
+    \ifthenelse{\equal{\curattr}{noattr}} {
+      \breakforeach
+    }{
+      \ifthenelse{\equal{\curattr}{rev}} {
+        \xdef\tsksiside{east}
+        \xdef\tsksoside{west}
+        \xdef\tskisrev{yes}
+      }{
+        \ifthenelse{\equal{\curattr}{seq}} {
+          \xdef\tskstyle{stask}
+          \xdef\tskisseq{yes}
+        }{}
+      }
+    }
+  }
+
   % draw task
   \def\tskpos{#3}
   \ifthenelse{\equal{\tskpos}{\string "nopos"}} {
     \ifthenelse{\equal{#1}{\string "noopt"}} {
-      \node[task, align=center] (\tskid) {\tsklabl};
+      \node[\tskstyle, align=center] (\tskid) {\tsklabl};
     }{
-      \node[task, align=center, #1] (\tskid) {\tsklabl};
+      \node[\tskstyle, align=center, #1] (\tskid) {\tsklabl};
     }
   }{
     \pgfmathsetmacro{\tskposx}{{#3}[0]}
     \pgfmathsetmacro{\tskposy}{{#3}[1]}
     \ifthenelse{\equal{#1}{\string "noopt"}} {
-      \node[task, align=center] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
+      \node[\tskstyle, align=center] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
     }{
-      \node[task, align=center, #1] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
+      \node[\tskstyle, align=center, #1] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
     }
   }
 
@@ -166,9 +194,9 @@
       \pgfmathtruncatemacro{\sckiyshift}{((\nsckifmone - \i) * \sckspace) - \sckiinishft}
       \pgfmathtruncatemacro{\sckiid}{\i + 1}
       \ifnum \numexpr \i  < \nscki
-        \node[sin, at=(\tskid.west), yshift=\sckiyshift] (\tskid_si\sckiid) {};
+        \node[sin, at=(\tskid.\tsksiside), yshift=\sckiyshift] (\tskid_si\sckiid) {};
       \else
-        \node[sfwd, at=(\tskid.west), yshift=\sckiyshift] (\tskid_si\sckiid) {};
+        \node[sfwd, at=(\tskid.\tsksiside), yshift=\sckiyshift] (\tskid_si\sckiid) {};
       \fi
     }
   \fi
@@ -181,9 +209,9 @@
       \pgfmathtruncatemacro{\sckoyshift}{((\nsckofmone - \i) * \sckspace) - \sckoinishft}
       \pgfmathtruncatemacro{\sckoid}{\i + 1}
       \ifnum \numexpr \i  < \nscko
-        \node[sout, at=(\tskid.east), yshift=\sckoyshift] (\tskid_so\sckoid) {};
+        \node[sout, at=(\tskid.\tsksoside), yshift=\sckoyshift] (\tskid_so\sckoid) {};
       \else
-        \node[sfwd, at=(\tskid.east), yshift=\sckoyshift] (\tskid_so\sckoid) {};
+        \node[sfwd, at=(\tskid.\tsksoside), yshift=\sckoyshift] (\tskid_so\sckoid) {};
       \fi
     }
   \fi
@@ -194,13 +222,23 @@
     \foreach \i in {0,...,\nsckfmone} {
       \pgfmathtruncatemacro{\cursif}{\nscki + \i + 1}
       \pgfmathtruncatemacro{\cursof}{\nscko + \i + 1}
-      \draw let
-        \p1=($(\tskid.west)-(\tskid.east)$),
-        \p2=($(\tskid_si\cursif.center)-(\tskid.south west)$),
-        \n1={veclen(\p1)-\pgflinewidth-(\nsckf -\i)*0.35cm},
-        \n2={veclen(\p2)-\pgflinewidth-(\nsckf -\i)*0.10cm},
-        \n3={(\nsckf -\i)*0.175cm}
-        in [bindfwd] (\tskid_si\cursif) --++ (\n3,-\n2) --++ (\n1,0.0) -- (\tskid_so\cursof);
+      \ifthenelse{\equal{\tskisrev}{yes}} {
+        \draw let
+          \p1=($(\tskid.west)-(\tskid.east)$),
+          \p2=($(\tskid_si\cursif.center)-(\tskid.south east)$),
+          \n1={veclen(\p1)-\pgflinewidth-(\nsckf -\i)*0.35cm},
+          \n2={veclen(\p2)-\pgflinewidth-(\nsckf -\i)*0.10cm},
+          \n3={(\nsckf -\i)*0.175cm}
+          in [bindfwd] (\tskid_si\cursif) --++ (-\n3,-\n2) --++ (-\n1,0.0) -- (\tskid_so\cursof);
+      }{
+        \draw let
+          \p1=($(\tskid.west)-(\tskid.east)$),
+          \p2=($(\tskid_si\cursif.center)-(\tskid.south west)$),
+          \n1={veclen(\p1)-\pgflinewidth-(\nsckf -\i)*0.35cm},
+          \n2={veclen(\p2)-\pgflinewidth-(\nsckf -\i)*0.10cm},
+          \n3={(\nsckf -\i)*0.175cm}
+          in [bindfwd] (\tskid_si\cursif) --++ (\n3,-\n2) --++ (\n1,0.0) -- (\tskid_so\cursof);
+      }
     }
   \fi
 }
