@@ -6,11 +6,11 @@
 \begin{document}
   \begin{tikzpicture}
     % create the tasks
-    \task{"noopt"}{t1}{0, 0}{$t_1$}{0}{2};
-    \task{right=1cm of t1}{t2}{"nopos"}{$t_2$}{2}{1};
-    \task{right=1cm of t2}{t3}{"nopos"}{$t_3$}{1}{1};
-    \task{right=1cm of t3, minimum width=1.75cm, minimum height=1.25cm}{t4}{"nopos"}{big task\\($t_4$)}{2}{3};
-    \task{right=1cm of t4}{t5}{"nopos"}{$t_5$}{2}{0};
+    \task{"noopt"}{t1}{0, 0}{$t_1$}{0}{2}{0};
+    \task{right=1cm of t1}{t2}{"nopos"}{$t_2$}{1}{0}{1};
+    \task{right=1cm of t2}{t3}{"nopos"}{$t_3$}{1}{1}{0};
+    \task{right=1cm of t3, minimum width=1.75cm, minimum height=1.25cm}{t4}{"nopos"}{big task\\($t_4$)}{2}{3}{0};
+    \task{right=1cm of t4}{t5}{"nopos"}{$t_5$}{2}{0}{0};
 
     % create the modules
     \module{"noopt"}{"t1"}{m1}{$M_1$};

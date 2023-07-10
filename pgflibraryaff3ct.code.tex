@@ -1,6 +1,5 @@
 % TODO:
 % - task attributes: "rev", "seq"
-% - forward socket
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -107,25 +106,17 @@
 \newcommand{\scksize}{0.3cm}
 \newcommand{\sckspace}{0.5cm}
 
-\tikzset{ task/.style  ={draw=Paired-1,  rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize} }
-\tikzset{ stask/.style ={draw=Paired-1,  rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize, fill=Paired-1!20} }
-\tikzset{ seq/.style   ={draw=Paired-11, rounded corners=2pt, densely dashed} }
-\tikzset{ subseq/.style={draw=Paired-9,  rounded corners=2pt} }
-\tikzset{ pip/.style   ={draw=Dark2-8,   dotted, thick, rounded corners=2pt} }
-\tikzset{ sin/.style   ={draw=Paired-7,  circle, minimum width=\scksize, text=black, preaction={fill=white}, pattern=north east lines, pattern color=Paired-7} }
-\tikzset{ sout/.style  ={draw=Paired-5,  circle, minimum width=\scksize, text=black, preaction={fill=white}, pattern=crosshatch dots, pattern color=Paired-5} }
-\tikzset{ sfwd/.style  ={draw=Dark2-7,   circle, minimum width=\scksize, text=black, preaction={fill=white}, pattern=grid, pattern color=Dark2-7} }
-\tikzset{ module/.style={draw=Paired-3,  dashed, rounded corners=2pt} }
-\tikzset{ bind/.style  ={->,>=latex} }
-
-% \newcounter{arraycard}
-% \def\arraylength#1{%
-%   \setcounter{arraycard}{0}%
-%   \foreach \x in #1{%
-%     \stepcounter{arraycard}%
-%   }%
-%   \the\value{arraycard}%
-% }
+\tikzset{ task/.style   = {draw=Paired-1,  rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize} }
+\tikzset{ stask/.style  = {draw=Paired-1,  rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize, fill=Paired-1!20} }
+\tikzset{ seq/.style    = {draw=Paired-11, rounded corners=2pt, densely dashed} }
+\tikzset{ subseq/.style = {draw=Paired-9,  rounded corners=2pt} }
+\tikzset{ pip/.style    = {draw=Dark2-8,   dotted, thick, rounded corners=2pt} }
+\tikzset{ sin/.style    = {draw=Paired-7,  circle, minimum width=\scksize, text=black, preaction={fill=white}, pattern=north east lines, pattern color=Paired-7} }
+\tikzset{ sout/.style   = {draw=Paired-5,  circle, minimum width=\scksize, text=black, preaction={fill=white}, pattern=crosshatch dots, pattern color=Paired-5} }
+\tikzset{ sfwd/.style   = {draw=Dark2-7,   circle, minimum width=\scksize, text=black, preaction={fill=white}, pattern=grid, pattern color=Dark2-7} }
+\tikzset{ module/.style = {draw=Paired-3,  dashed, rounded corners=2pt} }
+\tikzset{ bind/.style   = {->,>=latex} }
+\tikzset{ bindfwd/.style= {->,>=latex,draw=Dark2-7, densely dashdotted} }
 
 % #1 node options (can be "noopt")
 % #2 id {ti}
@@ -133,13 +124,16 @@
 % #4 label {label_of_the_task}
 % #5 number of input sockets (can be 0)
 % #6 number of output sockets (can be 0)
-\newcommand{\task}[6]{
+% #7 number of forward sockets (can be 0)
+\newcommand{\task}[7]{
   % parse arguments
   \def\tskid{#2}
   \def\tsklabl{#4}
   \pgfmathsetmacro{\nscki}{#5}
   \pgfmathsetmacro{\nscko}{#6}
+  \pgfmathsetmacro{\nsckf}{#7}
 
+  % draw task
   \def\tskpos{#3}
   \ifthenelse{\equal{\tskpos}{\string "nopos"}} {
     \ifthenelse{\equal{#1}{\string "noopt"}} {
@@ -157,27 +151,56 @@
     }
   }
 
-  \pgfmathtruncatemacro{\sckitotsize}{(\nscki - 1) * \sckspace}
+  % draw sockets
+  \pgfmathtruncatemacro{\sckitotsize}{(\nscki + \nsckf - 1) * \sckspace}
   \pgfmathtruncatemacro{\sckiinishft}{(\sckitotsize / 2)}
 
-  \pgfmathtruncatemacro{\sckototsize}{(\nscko - 1) * \sckspace}
+  \pgfmathtruncatemacro{\sckototsize}{(\nscko + \nsckf - 1) * \sckspace}
   \pgfmathtruncatemacro{\sckoinishft}{(\sckototsize / 2)}
 
-  \ifnum \numexpr\nscki > 0
-    \pgfmathtruncatemacro{\nsckimone}{\nscki - 1}
-    \foreach \i in {0,...,\nsckimone} {
-      \pgfmathtruncatemacro{\sckiyshift}{((\nsckimone - \i) * \sckspace) - \sckiinishft}
+  % input (+ fwd) socket
+  \pgfmathtruncatemacro{\nsckif}{\nscki + \nsckf}
+  \ifnum \numexpr\nsckif > 0
+    \pgfmathtruncatemacro{\nsckifmone}{\nscki + \nsckf - 1}
+    \foreach \i in {0,...,\nsckifmone} {
+      \pgfmathtruncatemacro{\sckiyshift}{((\nsckifmone - \i) * \sckspace) - \sckiinishft}
       \pgfmathtruncatemacro{\sckiid}{\i + 1}
-      \node[sin, at=(\tskid.west), yshift=\sckiyshift] (\tskid_si\sckiid) {};
+      \ifnum \numexpr \i  < \nscki
+        \node[sin, at=(\tskid.west), yshift=\sckiyshift] (\tskid_si\sckiid) {};
+      \else
+        \node[sfwd, at=(\tskid.west), yshift=\sckiyshift] (\tskid_si\sckiid) {};
+      \fi
     }
   \fi
 
-  \ifnum \numexpr\nscko > 0
-    \pgfmathtruncatemacro{\nsckomone}{\nscko - 1}
-    \foreach \i in {0,...,\nsckomone} {
-      \pgfmathtruncatemacro{\sckoyshift}{((\nsckomone - \i) * \sckspace) - \sckoinishft}
+  % output (+ fwd) socket
+  \pgfmathtruncatemacro{\nsckof}{\nscko + \nsckf}
+  \ifnum \numexpr\nsckof > 0
+    \pgfmathtruncatemacro{\nsckofmone}{\nscko + \nsckf - 1}
+    \foreach \i in {0,...,\nsckofmone} {
+      \pgfmathtruncatemacro{\sckoyshift}{((\nsckofmone - \i) * \sckspace) - \sckoinishft}
       \pgfmathtruncatemacro{\sckoid}{\i + 1}
-      \node[sout, at=(\tskid.east), yshift=\sckoyshift] (\tskid_so\sckoid) {};
+      \ifnum \numexpr \i  < \nscko
+        \node[sout, at=(\tskid.east), yshift=\sckoyshift] (\tskid_so\sckoid) {};
+      \else
+        \node[sfwd, at=(\tskid.east), yshift=\sckoyshift] (\tskid_so\sckoid) {};
+      \fi
+    }
+  \fi
+
+  % bind fwd sockets
+  \ifnum \numexpr\nsckf > 0
+    \pgfmathtruncatemacro{\nsckfmone}{\nsckf - 1}
+    \foreach \i in {0,...,\nsckfmone} {
+      \pgfmathtruncatemacro{\cursif}{\nscki + \i + 1}
+      \pgfmathtruncatemacro{\cursof}{\nscko + \i + 1}
+      \draw let
+        \p1=($(\tskid.west)-(\tskid.east)$),
+        \p2=($(\tskid_si\cursif.center)-(\tskid.south west)$),
+        \n1={veclen(\p1)-\pgflinewidth-(\nsckf -\i)*0.35cm},
+        \n2={veclen(\p2)-\pgflinewidth-(\nsckf -\i)*0.10cm},
+        \n3={(\nsckf -\i)*0.175cm}
+        in [bindfwd] (\tskid_si\cursif) --++ (\n3,-\n2) --++ (\n1,0.0) -- (\tskid_so\cursof);
     }
   \fi
 }
