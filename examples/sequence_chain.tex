@@ -1,0 +1,33 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usetikzlibrary{aff3ct}
+
+\begin{document}
+  \begin{tikzpicture}
+    \task{"noopt"}{t1}{0, 0}{$t_1$}{0}{2};
+    \task{right=1cm of t1}{t2}{"nopos"}{$t_2$}{2}{1};
+    \task{right=1cm of t2}{t3}{"nopos"}{$t_3$}{1}{1};
+    \task{right=1cm of t3, minimum width=1.75cm, minimum height=1.25cm}{t4}{"nopos"}{big task\\($t_4$)}{2}{3};
+    \task{right=1cm of t4}{t5}{"nopos"}{$t_5$}{2}{0};
+
+    \module{"noopt"}{"t1"}{m1}{$M_1$};
+    \module{"noopt"}{"t2"}{m2}{$M_2$};
+    \module{"noopt"}{"t3","t4","t5"}{m3}{$M_3$};
+
+    \draw[bind] (t1_so1) -- (t2_si2);
+    \draw[bind] (t1_so2) -- (t2_si1);
+    \draw[bind] (t2_so1) -- (t3_si1);
+    \draw[bind] (t2_so1) --++ (0.5,0) --++ (0.0,1.0) --++ (2.0,0.0) |- (t4_si1);
+    \draw[bind] (t3_so1) --++ (0.5,0) |- (t4_si2);
+    \draw[bind] (t4_so1) --++ (0.5,0) |- (t5_si1);
+    \draw[bind] (t4_so3) --++ (0.5,0) |- (t5_si2);
+
+    \sequence{minimum height=3.0cm}{"m1","m2","t3"}{s1}{Stage 1}
+    \sequence{minimum width=4.5cm, minimum height=3.0cm}{"t4","t5"}{s2}{Stage 2}
+
+    \legend{(-1.00,1.25)}
+    \thread{(-1,-0.25)}{0.5}{th1};
+    \thread{(9.75,-0.25)}{0.5}{th2};
+  \end{tikzpicture}
+\end{document}

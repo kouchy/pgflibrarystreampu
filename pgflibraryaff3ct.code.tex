@@ -1,0 +1,310 @@
+% TODO:
+% - task attributes: "rev", "seq"
+% - forward socket
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{environ}
+% ACM style
+\usepackage{newtxmath}
+\usepackage{libertine}
+\usepackage{inconsolata}
+% IEEEtrans style
+% \usepackage{mathptmx}
+
+\usepackage{tikz}
+\usetikzlibrary{matrix, positioning, fit, patterns, shapes, arrows, shapes.multipart, decorations.pathmorphing, calc, shapes.geometric}
+
+\usepackage{color}
+
+\definecolor{Paired-2}{RGB}{166,206,227}
+\definecolor{Paired-1}{RGB}{31,120,180}
+\definecolor{Paired-4}{RGB}{178,223,138}
+\definecolor{Paired-3}{RGB}{51,160,44}
+\definecolor{Paired-6}{RGB}{251,154,153}
+\definecolor{Paired-5}{RGB}{227,26,28}
+\definecolor{Paired-8}{RGB}{253,191,111}
+\definecolor{Paired-7}{RGB}{255,127,0}
+\definecolor{Paired-10}{RGB}{202,178,214}
+\definecolor{Paired-9}{RGB}{106,61,154}
+\definecolor{Paired-12}{RGB}{255,255,153}
+\definecolor{Paired-11}{RGB}{177,89,40}
+\definecolor{Accent-1}{RGB}{127,201,127}
+\definecolor{Accent-2}{RGB}{190,174,212}
+\definecolor{Accent-3}{RGB}{253,192,134}
+\definecolor{Accent-4}{RGB}{255,255,153}
+\definecolor{Accent-5}{RGB}{56,108,176}
+\definecolor{Accent-6}{RGB}{240,2,127}
+\definecolor{Accent-7}{RGB}{191,91,23}
+\definecolor{Accent-8}{RGB}{102,102,102}
+\definecolor{Spectral-1}{RGB}{158,1,66}
+\definecolor{Spectral-2}{RGB}{213,62,79}
+\definecolor{Spectral-3}{RGB}{244,109,67}
+\definecolor{Spectral-4}{RGB}{253,174,97}
+\definecolor{Spectral-5}{RGB}{254,224,139}
+\definecolor{Spectral-6}{RGB}{255,255,191}
+\definecolor{Spectral-7}{RGB}{230,245,152}
+\definecolor{Spectral-8}{RGB}{171,221,164}
+\definecolor{Spectral-9}{RGB}{102,194,165}
+\definecolor{Spectral-10}{RGB}{50,136,189}
+\definecolor{Spectral-11}{RGB}{94,79,162}
+\definecolor{Set1-1}{RGB}{228,26,28}
+\definecolor{Set1-2}{RGB}{55,126,184}
+\definecolor{Set1-3}{RGB}{77,175,74}
+\definecolor{Set1-4}{RGB}{152,78,163}
+\definecolor{Set1-5}{RGB}{255,127,0}
+\definecolor{Set1-6}{RGB}{255,255,51}
+\definecolor{Set1-7}{RGB}{166,86,40}
+\definecolor{Set1-8}{RGB}{247,129,191}
+\definecolor{Set1-9}{RGB}{153,153,153}
+\definecolor{Set2-1}{RGB}{102,194,165}
+\definecolor{Set2-2}{RGB}{252,141,98}
+\definecolor{Set2-3}{RGB}{141,160,203}
+\definecolor{Set2-4}{RGB}{231,138,195}
+\definecolor{Set2-5}{RGB}{166,216,84}
+\definecolor{Set2-6}{RGB}{255,217,47}
+\definecolor{Set2-7}{RGB}{229,196,148}
+\definecolor{Set2-8}{RGB}{179,179,179}
+\definecolor{Dark2-1}{RGB}{27,158,119}
+\definecolor{Dark2-2}{RGB}{217,95,2}
+\definecolor{Dark2-3}{RGB}{117,112,179}
+\definecolor{Dark2-4}{RGB}{231,41,138}
+\definecolor{Dark2-5}{RGB}{102,166,30}
+\definecolor{Dark2-6}{RGB}{230,171,2}
+\definecolor{Dark2-7}{RGB}{166,118,29}
+\definecolor{Dark2-8}{RGB}{102,102,102}
+\definecolor{Reds-1}{RGB}{255,245,240}
+\definecolor{Reds-2}{RGB}{254,224,210}
+\definecolor{Reds-3}{RGB}{252,187,161}
+\definecolor{Reds-4}{RGB}{252,146,114}
+\definecolor{Reds-5}{RGB}{251,106,74}
+\definecolor{Reds-6}{RGB}{239,59,44}
+\definecolor{Reds-7}{RGB}{203,24,29}
+\definecolor{Reds-8}{RGB}{165,15,21}
+\definecolor{Reds-9}{RGB}{103,0,13}
+\definecolor{Greens-1}{RGB}{247,252,245}
+\definecolor{Greens-2}{RGB}{229,245,224}
+\definecolor{Greens-3}{RGB}{199,233,192}
+\definecolor{Greens-4}{RGB}{161,217,155}
+\definecolor{Greens-5}{RGB}{116,196,118}
+\definecolor{Greens-6}{RGB}{65,171,93}
+\definecolor{Greens-7}{RGB}{35,139,69}
+\definecolor{Greens-8}{RGB}{0,109,44}
+\definecolor{Greens-9}{RGB}{0,68,27}
+\definecolor{Blues-1}{RGB}{247,251,255}
+\definecolor{Blues-2}{RGB}{222,235,247}
+\definecolor{Blues-3}{RGB}{198,219,239}
+\definecolor{Blues-4}{RGB}{158,202,225}
+\definecolor{Blues-5}{RGB}{107,174,214}
+\definecolor{Blues-6}{RGB}{66,146,198}
+\definecolor{Blues-7}{RGB}{33,113,181}
+\definecolor{Blues-8}{RGB}{8,81,156}
+\definecolor{Blues-9}{RGB}{8,48,107}
+
+\newcommand{\tskminsize}{1.0cm}
+\newcommand{\scksize}{0.3cm}
+\newcommand{\sckspace}{0.5cm}
+
+\tikzset{ task/.style  ={draw=Paired-1,  rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize} }
+\tikzset{ stask/.style ={draw=Paired-1,  rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize, fill=Paired-1!20} }
+\tikzset{ seq/.style   ={draw=Paired-11, rounded corners=2pt, densely dashed} }
+\tikzset{ subseq/.style={draw=Paired-9,  rounded corners=2pt} }
+\tikzset{ pip/.style   ={draw=Dark2-8,   dotted, thick, rounded corners=2pt} }
+\tikzset{ sin/.style   ={draw=Paired-7,  circle, minimum width=\scksize, text=black, preaction={fill=white}, pattern=north east lines, pattern color=Paired-7} }
+\tikzset{ sout/.style  ={draw=Paired-5,  circle, minimum width=\scksize, text=black, preaction={fill=white}, pattern=crosshatch dots, pattern color=Paired-5} }
+\tikzset{ sfwd/.style  ={draw=Dark2-7,   circle, minimum width=\scksize, text=black, preaction={fill=white}, pattern=grid, pattern color=Dark2-7} }
+\tikzset{ module/.style={draw=Paired-3,  dashed, rounded corners=2pt} }
+\tikzset{ bind/.style  ={->,>=latex} }
+
+% \newcounter{arraycard}
+% \def\arraylength#1{%
+%   \setcounter{arraycard}{0}%
+%   \foreach \x in #1{%
+%     \stepcounter{arraycard}%
+%   }%
+%   \the\value{arraycard}%
+% }
+
+% #1 node options (can be "noopt")
+% #2 id {ti}
+% #3 position {x,y} (can be "nopos")
+% #4 label {label_of_the_task}
+% #5 number of input sockets (can be 0)
+% #6 number of output sockets (can be 0)
+\newcommand{\task}[6]{
+  % parse arguments
+  \def\tskid{#2}
+  \def\tsklabl{#4}
+  \pgfmathsetmacro{\nscki}{#5}
+  \pgfmathsetmacro{\nscko}{#6}
+
+  \def\tskpos{#3}
+  \ifthenelse{\equal{\tskpos}{\string "nopos"}} {
+    \ifthenelse{\equal{#1}{\string "noopt"}} {
+      \node[task, align=center] (\tskid) {\tsklabl};
+    }{
+      \node[task, align=center, #1] (\tskid) {\tsklabl};
+    }
+  }{
+    \pgfmathsetmacro{\tskposx}{{#3}[0]}
+    \pgfmathsetmacro{\tskposy}{{#3}[1]}
+    \ifthenelse{\equal{#1}{\string "noopt"}} {
+      \node[task, align=center] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
+    }{
+      \node[task, align=center, #1] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
+    }
+  }
+
+  \pgfmathtruncatemacro{\sckitotsize}{(\nscki - 1) * \sckspace}
+  \pgfmathtruncatemacro{\sckiinishft}{(\sckitotsize / 2)}
+
+  \pgfmathtruncatemacro{\sckototsize}{(\nscko - 1) * \sckspace}
+  \pgfmathtruncatemacro{\sckoinishft}{(\sckototsize / 2)}
+
+  \ifnum \numexpr\nscki > 0
+    \pgfmathtruncatemacro{\nsckimone}{\nscki - 1}
+    \foreach \i in {0,...,\nsckimone} {
+      \pgfmathtruncatemacro{\sckiyshift}{((\nsckimone - \i) * \sckspace) - \sckiinishft}
+      \pgfmathtruncatemacro{\sckiid}{\i + 1}
+      \node[sin, at=(\tskid.west), yshift=\sckiyshift] (\tskid_si\sckiid) {};
+    }
+  \fi
+
+  \ifnum \numexpr\nscko > 0
+    \pgfmathtruncatemacro{\nsckomone}{\nscko - 1}
+    \foreach \i in {0,...,\nsckomone} {
+      \pgfmathtruncatemacro{\sckoyshift}{((\nsckomone - \i) * \sckspace) - \sckoinishft}
+      \pgfmathtruncatemacro{\sckoid}{\i + 1}
+      \node[sout, at=(\tskid.east), yshift=\sckoyshift] (\tskid_so\sckoid) {};
+    }
+  \fi
+}
+
+\long\def\@nodedefined#1#2#3{%
+  \@ifundefined{pgf@sh@ns@#1}{#3}{#2}%
+}
+
+\long\def\@moduledefined#1#2#3{%
+  \@ifundefined{@mdl@#1}{#3}{#2}%
+}
+
+% #1 node options (can be "noopt")
+% #2 list of tasks {t0, t1, t2, ...}
+% #3 id {mi}
+% #4 label {label_of_the_module}
+\newcommand{\module}[4]{
+  % parse arguments
+  \pgfmathsetmacro{\ntsk}{dim(#2)}
+  \def\tids{};
+  \pgfmathsetmacro{\ntskmone}{int(\ntsk - 1)}
+  \foreach \i in {0,...,\ntskmone}{
+    \ifthenelse{\ntskmone=0}{
+      \pgfmathsetmacro{\curtsk}{#2}
+    }{
+      \pgfmathsetmacro{\curtsk}{{#2}[\i]}
+    }
+    \xdef\tids{\tids (\curtsk)}
+
+    % loop over input sockets
+    \def\sids{};
+    \foreach \si in {1,...,100}{
+      \@nodedefined{\curtsk_si\si}{
+        \xdef\sids{\sids (\curtsk_si\si)}
+      }{
+        \breakforeach
+      }
+    }
+    % loop over output sockets
+    \foreach \so in {1,...,100}{
+      \@nodedefined{\curtsk_so\so}{
+        \xdef\sids{\sids (\curtsk_so\so)}
+      }{
+        \breakforeach
+      }
+    }
+    \xdef\tids{\tids \sids}
+  }
+  \def\mdlid{#3};
+  \def\mdllabl{#4};
+  \def\@mdl@#3{\tids}; % defined for the sequence optimization
+
+  % start drawing
+  \ifthenelse{\equal{#1}{\string "noopt"}} {
+    \node[module, label={[Paired-3,align=center]below:\mdllabl}, fit=\tids] (\mdlid) {};
+  }{
+    \node[module, label={[Paired-3,align=center]below:\mdllabl}, fit=\tids, #1] (\mdlid) {};
+  }
+}
+
+% #1 node options (can be "noopt")
+% #2 list of tasks of modules {t0, m1, t2, ...}
+% #3 id {si}
+% #4 label {label_of_the_sequence}
+\newcommand{\sequence}[4]{
+  % parse arguments
+  \pgfmathsetmacro{\ntsk}{dim(#2)}
+  \def\ids{};
+  \pgfmathsetmacro{\ntskmone}{int(\ntsk - 1)}
+  \foreach \i in {0,...,\ntskmone}{
+    \ifthenelse{\ntskmone=0}{
+      \pgfmathsetmacro{\curobj}{#2}
+    }{
+      \pgfmathsetmacro{\curobj}{{#2}[\i]}
+    }
+    \xdef\ids{\ids (\curobj)}
+    % if it is a module, then we found task and sockets before
+    \@moduledefined{\curobj}{
+      \xdef\ids{\ids \@mdl@\curobj}
+    }{
+      % loop over input sockets
+      \def\sids{};
+      \foreach \si in {1,...,100}{
+        \@nodedefined{\curobj_si\si}{
+          \xdef\sids{\sids (\curobj_si\si)}
+        }{
+          \breakforeach
+        }
+      }
+      % loop over output sockets
+      \foreach \so in {1,...,100}{
+        \@nodedefined{\curobj_so\so}{
+          \xdef\sids{\sids (\curobj_so\so)}
+        }{
+          \breakforeach
+        }
+      }
+      \xdef\ids{\ids \sids}
+    }
+  }
+  \def\seqid{#3};
+  \def\seqlabl{#4};
+
+  % start drawing
+  \ifthenelse{\equal{#1}{\string "noopt"}} {
+    \node[seq, label={[Paired-11,align=center]below:\seqlabl}, fit=\ids] (\seqid) {};
+  }{
+    \node[seq, label={[Paired-11,align=center]below:\seqlabl}, fit=\ids, #1] (\seqid) {};
+  }
+}
+
+\newcommand{\legend}[1]{
+  \begin{scope}[shift={#1}]
+    \node[draw=Paired-1, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-1, label={right:Parallel task}] (l1) at (+0.0, 1.9) {};
+    \node[draw=Paired-1, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-1, fill=Paired-1!20, label={right:Sequential task}] (l2) at (+0.0, 1.4) {};
+    \node[draw=Paired-3, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-3, dashed, label={right:Module}] (l3) at (+0.0, 0.9) {};
+    \node[sin,  label={right:Input socket} ] (l4) at (+3.5, 1.9) {};
+    \node[sout, label={right:Output socket}] (l5) at (+3.5, 1.4) {};
+    \node[sfwd, label={right:Forward socket}] (l6) at (+3.5, 0.9) {};
+    \node[draw=Paired-11, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, dashed, label={right:Sequence or pipeline stage}] (l7) at (+7.0, 1.9) {};
+    \node[] (l8) at (11.15, 1.9) {};
+    \node[draw, fit=(l1) (l2) (l3) (l4) (l5) (l6) (l7) (l8)] (legend) {};
+  \end{scope}
+}
+
+\newcommand{\thread}[3]{
+  \begin{scope}[shift={#1},scale=#2]
+    \draw[thick] plot [smooth,tension=0.7] coordinates {(0,1) (0.15,0.875) (-0.1,0.625) (0.2,0.25) (0,0)} node (#3){};
+  \end{scope}
+}
