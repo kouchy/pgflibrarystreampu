@@ -108,9 +108,12 @@
 \tikzset{ seq/.style    = {draw=Paired-11, rounded corners=2pt, densely dashed} }
 \tikzset{ subseq/.style = {draw=Paired-9,  rounded corners=2pt} }
 \tikzset{ pip/.style    = {draw=Dark2-8,   dotted, thick, rounded corners=2pt} }
-\tikzset{ sin/.style    = {draw=Paired-7,  circle, minimum width=\scksize, text=black, preaction={fill=white}, pattern=north east lines, pattern color=Paired-7} }
-\tikzset{ sout/.style   = {draw=Paired-5,  circle, minimum width=\scksize, text=black, preaction={fill=white}, pattern=crosshatch dots, pattern color=Paired-5} }
-\tikzset{ sfwd/.style   = {draw=Dark2-7,   circle, minimum width=\scksize, text=black, preaction={fill=white}, pattern=grid, pattern color=Dark2-7} }
+\tikzset{ sin/.style    = {draw=Paired-7,  circle, minimum width=\scksize, text=Paired-7!80!black, preaction={fill=white}, pattern=north east lines, pattern color=Paired-7} }
+\tikzset{ sout/.style   = {draw=Paired-5,  circle, minimum width=\scksize, text=Paired-5!80!black, preaction={fill=white}, pattern=crosshatch dots, pattern color=Paired-5} }
+\tikzset{ sfwd/.style   = {draw=Dark2-7,   circle, minimum width=\scksize, text=Dark2-7!80!black,  preaction={fill=white}, pattern=grid, pattern color=Dark2-7} }
+\tikzset{ sinlbl/.style = {text=Paired-7!80!black, font=\footnotesize} }
+\tikzset{ soutlbl/.style= {text=Paired-5!80!black, font=\footnotesize} }
+\tikzset{ sfwdlbl/.style= {text=Dark2-7!80!black,  font=\footnotesize} }
 \tikzset{ module/.style = {draw=Paired-3,  dashed, rounded corners=2pt} }
 \tikzset{ bind/.style   = {->,>=latex} }
 \tikzset{ bindfwd/.style= {->,>=latex,draw=Dark2-7, densely dashdotted} }
@@ -122,7 +125,7 @@
 % #5 number of input sockets (can be 0)
 % #6 number of output sockets (can be 0)
 % #7 number of forward sockets (can be 0)
-% #8 a list of attributes (can be {"rev", "seq"} and can also be empty)
+% #8 a list of attributes (can be {"rev", "seq", "sckn"} and can also be empty)
 \newcommand{\task}[8][]{
   % parse arguments
   \def\tskid{#2}
@@ -137,6 +140,7 @@
   \def\tskisrev{no}
   \def\tskstyle{task}
   \def\tskisseq{no}
+  \def\scknum{no}
   \ifthenelse{\equal{#8}{}} {
   }{
     \pgfmathsetmacro{\nattr}{dim(#8)}
@@ -155,7 +159,11 @@
         \ifthenelse{\equal{\curattr}{seq}} {
           \xdef\tskstyle{stask}
           \xdef\tskisseq{yes}
-        }{}
+        }{
+          \ifthenelse{\equal{\curattr}{sckn}} {
+            \xdef\scknum{yes}
+          }{}
+        }
       }
     }
   }
@@ -206,8 +214,14 @@
       \pgfmathtruncatemacro{\sckiid}{\i + 1}
       \ifnum \numexpr \i  < \nscki
         \node[sin, at=(\tskid.\tsksiside), yshift=\sckiyshift] (\tskid_si\sckiid) {};
+        \ifthenelse{\equal{\scknum}{yes}} {
+          \node[sinlbl, at=(\tskid_si\sckiid.center)] (\tskid_si\sckiid_lbl) {\sckiid};
+        }{}
       \else
         \node[sfwd, at=(\tskid.\tsksiside), yshift=\sckiyshift] (\tskid_si\sckiid) {};
+        \ifthenelse{\equal{\scknum}{yes}} {
+          \node[sfwdlbl, at=(\tskid_si\sckiid.center)] (\tskid_si\sckiid_lbl) {\sckiid};
+        }{}
       \fi
     }
   \fi
@@ -223,8 +237,14 @@
       \pgfmathtruncatemacro{\sckoid}{\i + 1}
       \ifnum \numexpr \i  < \nscko
         \node[sout, at=(\tskid.\tsksoside), yshift=\sckoyshift] (\tskid_so\sckoid) {};
+        \ifthenelse{\equal{\scknum}{yes}} {
+          \node[soutlbl, at=(\tskid_so\sckoid.center)] (\tskid_so\sckoid_lbl) {\sckoid};
+        }{}
       \else
         \node[sfwd, at=(\tskid.\tsksoside), yshift=\sckoyshift] (\tskid_so\sckoid) {};
+        \ifthenelse{\equal{\scknum}{yes}} {
+          \node[sfwdlbl, at=(\tskid_so\sckoid.center)] (\tskid_so\sckoid_lbl) {\sckoid};
+        }{}
       \fi
     }
   \fi
