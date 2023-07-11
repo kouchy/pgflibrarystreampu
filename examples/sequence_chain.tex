@@ -8,25 +8,25 @@
     %%%%%%%%%%%%%%%%%%%%%%
     %% create the tasks %%
     %%%%%%%%%%%%%%%%%%%%%%
-    %     options                          id   coords   label               sin sout sfwd attributes
-    %     -------                          --   ------   -----               --- ---- ---- ----------
-    \task {"null"}                         {t1} {0, 0}   {$t_1$}             {0} {2}  {0}  {"seq"};
-    \task {right=1.0cm of t1}              {t2} {"null"} {$t_2$}             {1} {0}  {1}  {"null"};
-    \task {right=1.0cm of t2}              {t3} {"null"} {$t_3$}             {1} {1}  {0}  {"null"};
-    \task {right=1.0cm of t3}              {t4} {"null"} {big task\\($t_4$)} {2} {3}  {0}  {"seq"};
-    \task {right=1.0cm of t4}              {t5} {"null"} {$t_5$}             {2} {1}  {0}  {"null"};
-    \task {below=2.5cm of t5, xshift=-2cm} {t6} {"null"} {$t_6$}             {2} {3}  {0}  {"rev","seq"};
-    \task {left =1.0cm of t6}              {t7} {"null"} {$t_7$}             {1} {0}  {2}  {"rev"};
-    \task {left =1.0cm of t7}              {t8} {"null"} {$t_8$}             {2} {0}  {0}  {"rev"};
+    %     options                          id   coords  label               sin sout sfwd attributes
+    %     -------                          --   ------  -----               --- ---- ---- ----------
+    \task                                  {t1} {0, 0}  {$t_1$}             {0} {2}  {0}  {"seq"};
+    \task [right=1.0cm of t1]              {t2} {}      {$t_2$}             {1} {0}  {1}  {};
+    \task [right=1.0cm of t2]              {t3} {}      {$t_3$}             {1} {1}  {0}  {};
+    \task [right=1.0cm of t3]              {t4} {}      {big task\\($t_4$)} {2} {3}  {0}  {"seq"};
+    \task [right=1.0cm of t4]              {t5} {}      {$t_5$}             {2} {1}  {0}  {};
+    \task [below=2.5cm of t5, xshift=-2cm] {t6} {}      {$t_6$}             {2} {3}  {0}  {"rev","seq"};
+    \task [left =1.0cm of t6]              {t7} {}      {$t_7$}             {1} {0}  {2}  {"rev"};
+    \task [left =1.0cm of t7]              {t8} {}      {$t_8$}             {2} {0}  {0}  {"rev"};
 
     %%%%%%%%%%%%%%%%%%%%%%%%
     %% create the modules %%
     %%%%%%%%%%%%%%%%%%%%%%%%
     %       options  task ids         id   label
     %       -------  --------         --   -----
-    \module {"null"} {"t1"}           {m1} {$M_1$};
-    \module {"null"} {"t2"}           {m2} {$M_2$};
-    \module {"null"} {"t3","t4","t5"} {m3} {$M_3$};
+    \module          {"t1"}           {m1} {$M_1$};
+    \module          {"t2"}           {m2} {$M_2$};
+    \module          {"t3","t4","t5"} {m3} {$M_3$};
 
     %%%%%%%%%%%%%%%%%%%%
     %% bind the tasks %%
@@ -51,9 +51,9 @@
     %%%%%%%%%%%%%%%%%%%%%%%%%%
     %         options                                       object ids       id   label
     %         -------                                       ----------       --   -----
-    \sequence {minimum height=3.00cm}                       {"m1","m2","t3"} {s1} {Stage 1}
-    \sequence {minimum width=4.50cm, minimum height=3.00cm} {"t4","t5"}      {s2} {Stage 2}
-    \sequence {minimum width=5.75cm, minimum height=2.25cm} {"t6","t7","t8"} {s3} {Stage 3}
+    \sequence [minimum height=3.00cm]                       {"m1","m2","t3"} {s1} {Stage 1}
+    \sequence [minimum width=4.50cm, minimum height=3.00cm] {"t4","t5"}      {s2} {Stage 2}
+    \sequence [minimum width=5.75cm, minimum height=2.25cm] {"t6","t7","t8"} {s3} {Stage 3}
 
     %%%%%%%%%%%%%%%%%%%%%
     %% draw the legend %%

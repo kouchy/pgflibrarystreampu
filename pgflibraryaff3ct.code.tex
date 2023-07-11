@@ -115,15 +115,15 @@
 \tikzset{ bind/.style   = {->,>=latex} }
 \tikzset{ bindfwd/.style= {->,>=latex,draw=Dark2-7, densely dashdotted} }
 
-% #1 node options (can be "null")
+% #1 node options (optional parameter)
 % #2 id {ti}
-% #3 position {x,y} (can be "null")
+% #3 position {x,y} (can be empty)
 % #4 label {label_of_the_task}
 % #5 number of input sockets (can be 0)
 % #6 number of output sockets (can be 0)
 % #7 number of forward sockets (can be 0)
-% #8 a list of attributes (can be {"rev", "seq", "null"})
-\newcommand{\task}[8]{
+% #8 a list of attributes (can be {"rev", "seq"} and can also be empty)
+\newcommand{\task}[8][]{
   % parse arguments
   \def\tskid{#2}
   \def\tsklabl{#4}
@@ -137,17 +137,16 @@
   \def\tskisrev{no}
   \def\tskstyle{task}
   \def\tskisseq{no}
-  \pgfmathsetmacro{\nattr}{dim(#8)}
-  \pgfmathsetmacro{\nattrmone}{int(\nattr - 1)}
-  \foreach \i in {0,...,\nattrmone}{
-    \ifthenelse{\nattrmone=0}{
-      \pgfmathsetmacro{\curattr}{#8}
-    }{
-      \pgfmathsetmacro{\curattr}{{#8}[\i]}
-    }
-    \ifthenelse{\equal{\curattr}{null}} {
-      \breakforeach
-    }{
+  \ifthenelse{\equal{#8}{}} {
+  }{
+    \pgfmathsetmacro{\nattr}{dim(#8)}
+    \pgfmathsetmacro{\nattrmone}{int(\nattr - 1)}
+    \foreach \i in {0,...,\nattrmone}{
+      \ifthenelse{\nattrmone=0}{
+        \pgfmathsetmacro{\curattr}{#8}
+      }{
+        \pgfmathsetmacro{\curattr}{{#8}[\i]}
+      }
       \ifthenelse{\equal{\curattr}{rev}} {
         \xdef\tsksiside{east}
         \xdef\tsksoside{west}
@@ -180,8 +179,8 @@
 
   % draw task
   \def\tskpos{#3}
-  \ifthenelse{\equal{\tskpos}{\string "null"}} {
-    \ifthenelse{\equal{#1}{\string "null"}} {
+  \ifthenelse{\equal{\tskpos}{}} {
+    \ifthenelse{\equal{#1}{}} {
       \node[\tskstyle, align=center, minimum height=\tskrealminheight] (\tskid) {\tsklabl};
     }{
       \node[\tskstyle, align=center, minimum height=\tskrealminheight, #1] (\tskid) {\tsklabl};
@@ -189,7 +188,7 @@
   }{
     \pgfmathsetmacro{\tskposx}{{#3}[0]}
     \pgfmathsetmacro{\tskposy}{{#3}[1]}
-    \ifthenelse{\equal{#1}{\string "null"}} {
+    \ifthenelse{\equal{#1}{}} {
       \node[\tskstyle, align=center, minimum height=\tskrealminheight] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
     }{
       \node[\tskstyle, align=center, minimum height=\tskrealminheight, #1] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
@@ -265,11 +264,11 @@
   \@ifundefined{@mdl@#1}{#3}{#2}%
 }
 
-% #1 node options (can be "null")
+% #1 node options (optional parameter)
 % #2 list of tasks {t0, t1, t2, ...}
 % #3 id {mi}
 % #4 label {label_of_the_module}
-\newcommand{\module}[4]{
+\newcommand{\module}[4][]{
   % parse arguments
   \pgfmathsetmacro{\ntsk}{dim(#2)}
   \def\tids{};
@@ -306,18 +305,18 @@
   \def\@mdl@#3{\tids}; % defined for the sequence optimization
 
   % start drawing
-  \ifthenelse{\equal{#1}{\string "null"}} {
+  \ifthenelse{\equal{#1}{}} {
     \node[module, label={[Paired-3,align=center]below:\mdllabl}, fit=\tids] (\mdlid) {};
   }{
     \node[module, label={[Paired-3,align=center]below:\mdllabl}, fit=\tids, #1] (\mdlid) {};
   }
 }
 
-% #1 node options (can be "null")
+% #1 node options (optional parameter)
 % #2 list of tasks of modules {t0, m1, t2, ...}
 % #3 id {si}
 % #4 label {label_of_the_sequence}
-\newcommand{\sequence}[4]{
+\newcommand{\sequence}[4][]{
   % parse arguments
   \pgfmathsetmacro{\ntsk}{dim(#2)}
   \def\ids{};
@@ -357,7 +356,7 @@
   \def\seqlabl{#4};
 
   % start drawing
-  \ifthenelse{\equal{#1}{\string "null"}} {
+  \ifthenelse{\equal{#1}{}} {
     \node[seq, label={[Paired-11,align=center]below:\seqlabl}, fit=\ids] (\seqid) {};
   }{
     \node[seq, label={[Paired-11,align=center]below:\seqlabl}, fit=\ids, #1] (\seqid) {};
