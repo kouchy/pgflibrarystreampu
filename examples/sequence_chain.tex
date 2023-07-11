@@ -16,7 +16,7 @@
     \task [right=1.0cm of t3]              {t4} {}      {big task\\($t_4$)} {2} {3}  {0}  {"seq","sckn"};
     \task [right=1.0cm of t4]              {t5} {}      {$t_5$}             {2} {1}  {0}  {};
     \task [below=2.5cm of t5, xshift=-2cm] {t6} {}      {$t_6$}             {2} {3}  {0}  {"rev","seq"};
-    \task [left =1.0cm of t6]              {t7} {}      {$t_7$}             {1} {0}  {2}  {"rev", "sckn"};
+    \task [left =1.0cm of t6]              {t7} {}      {$t_7$}             {1} {0}  {2}  {"rev","sckn"};
     \task [left =1.0cm of t7]              {t8} {}      {$t_8$}             {2} {0}  {0}  {"rev"};
 
     %%%%%%%%%%%%%%%%%%%%
@@ -31,20 +31,22 @@
     %%%%%%%%%%%%%%%%
     %% bind tasks %%
     %%%%%%%%%%%%%%%%
-    \draw [bind] (t1_so1) -- (t2_si2);
-    \draw [bind] (t1_so2) -- (t2_si1);
-    \draw [bind] (t2_so1) -- (t3_si1);
-    \draw [bind] (t2_so1) --++ (0.50,0) --++ (0.0,1.0) --++ (2.0,0.0) |- (t4_si1);
-    \draw [bind] (t3_so1) --++ (0.50,0) |- (t4_si2);
-    \draw [bind] (t4_so1) --++ (0.50,0) |- (t5_si1);
-    \draw [bind] (t4_so3) --++ (0.50,0) |- (t5_si2);
-    \draw [bind] (t4_so2) --++ (0.65,0) |- (t6_si1);
-    \draw [bind] (t5_so1) --++ (0.50,0) |- (t6_si2);
-    \draw [bind] (t6_so1) -- (t7_si1);
-    \draw [bind] (t6_so2) -- (t7_si2);
-    \draw [bind] (t6_so3) -- (t7_si3);
-    \draw [bind] (t7_so1) -- (t8_si1);
-    \draw [bind] (t7_so2) -- (t8_si2);
+    %     options start id path                                           end id
+    %     ------- -------- ----                                           ------
+    \draw [bind]  (t1_so1)                                             -- (t2_si2);
+    \draw [bind]  (t1_so2)                                             -- (t2_si1);
+    \draw [bind]  (t2_so1)                                             -- (t3_si1);
+    \draw [bind]  (t2_so1) --++ (0.50,0) --++ (0.0,1.0) --++ (2.0,0.0) |- (t4_si1);
+    \draw [bind]  (t3_so1) --++ (0.50,0)                               |- (t4_si2);
+    \draw [bind]  (t4_so1) --++ (0.50,0)                               |- (t5_si1);
+    \draw [bind]  (t4_so3) --++ (0.50,0)                               |- (t5_si2);
+    \draw [bind]  (t4_so2) --++ (0.65,0)                               |- (t6_si1);
+    \draw [bind]  (t5_so1) --++ (0.50,0)                               |- (t6_si2);
+    \draw [bind]  (t6_so1)                                             -- (t7_si1);
+    \draw [bind]  (t6_so2)                                             -- (t7_si2);
+    \draw [bind]  (t6_so3)                                             -- (t7_si3);
+    \draw [bind]  (t7_so1)                                             -- (t8_si1);
+    \draw [bind]  (t7_so2)                                             -- (t8_si2);
 
     %%%%%%%%%%%%%%%%%%%
     %% create stages %%
