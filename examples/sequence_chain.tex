@@ -5,9 +5,9 @@
 
 \begin{document}
   \begin{tikzpicture}
-    %%%%%%%%%%%%%%%%%%%%%%
-    %% create the tasks %%
-    %%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%
+    %% create tasks %%
+    %%%%%%%%%%%%%%%%%%
     %     options                          id   coords  label               sin sout sfwd attributes
     %     -------                          --   ------  -----               --- ---- ---- ----------
     \task                                  {t1} {0, 0}  {$t_1$}             {0} {2}  {0}  {"seq"};
@@ -19,18 +19,18 @@
     \task [left =1.0cm of t6]              {t7} {}      {$t_7$}             {1} {0}  {2}  {"rev"};
     \task [left =1.0cm of t7]              {t8} {}      {$t_8$}             {2} {0}  {0}  {"rev"};
 
-    %%%%%%%%%%%%%%%%%%%%%%%%
-    %% create the modules %%
-    %%%%%%%%%%%%%%%%%%%%%%%%
-    %       options  task ids         id   label
-    %       -------  --------         --   -----
-    \module          {"t1"}           {m1} {$M_1$};
-    \module          {"t2"}           {m2} {$M_2$};
-    \module          {"t3","t4","t5"} {m3} {$M_3$};
+    %%%%%%%%%%%%%%%%%%%%
+    %% create modules %%
+    %%%%%%%%%%%%%%%%%%%%
+    %       options      task ids         id   label
+    %       -------      --------         --   -----
+    \module              {"t1"}           {m1} {$M_1$};
+    \module              {"t2"}           {m2} {$M_2$};
+    \module [very thick] {"t3","t4","t5"} {m3} {$\bm{M_3$}};
 
-    %%%%%%%%%%%%%%%%%%%%
-    %% bind the tasks %%
-    %%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%
+    %% bind tasks %%
+    %%%%%%%%%%%%%%%%
     \draw [bind] (t1_so1) -- (t2_si2);
     \draw [bind] (t1_so2) -- (t2_si1);
     \draw [bind] (t2_so1) -- (t3_si1);
@@ -46,14 +46,14 @@
     \draw [bind] (t7_so1) -- (t8_si1);
     \draw [bind] (t7_so2) -- (t8_si2);
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% create the sequences %%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%
-    %         options                                       object ids       id   label
-    %         -------                                       ----------       --   -----
-    \sequence [minimum height=3.00cm]                       {"m1","m2","t3"} {s1} {Stage 1}
-    \sequence [minimum width=4.50cm, minimum height=3.00cm] {"t4","t5"}      {s2} {Stage 2}
-    \sequence [minimum width=5.75cm, minimum height=2.25cm] {"t6","t7","t8"} {s3} {Stage 3}
+    %%%%%%%%%%%%%%%%%%%
+    %% create stages %%
+    %%%%%%%%%%%%%%%%%%%
+    %      options                                       object ids       id   label
+    %      -------                                       ----------       --   -----
+    \stage [minimum height=3.00cm]                       {"m1","m2","t3"} {s1} {Stage 1}
+    \stage [minimum width=4.50cm, minimum height=3.00cm] {"t4","t5"}      {s2} {Stage 2}
+    \stage [minimum width=5.75cm, minimum height=2.25cm] {"t6","t7","t8"} {s3} {Stage 3}
 
     %%%%%%%%%%%%%%%%%%%%%
     %% draw the legend %%

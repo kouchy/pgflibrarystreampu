@@ -363,6 +363,11 @@
   }
 }
 
+% alias of previously defined sequence
+\newcommand{\stage}[4][]{
+  \sequence[#1]{#2}{#3}{#4}
+}
+
 \newcommand{\legend}[1]{
   \begin{scope}[shift={#1}]
     \node[draw=Paired-1, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-1, label={right:Parallel task}] (l1) at (+0.0, 1.9) {};
