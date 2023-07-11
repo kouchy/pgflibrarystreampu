@@ -115,14 +115,14 @@
 \tikzset{ bind/.style   = {->,>=latex} }
 \tikzset{ bindfwd/.style= {->,>=latex,draw=Dark2-7, densely dashdotted} }
 
-% #1 node options (can be "noopt")
+% #1 node options (can be "null")
 % #2 id {ti}
-% #3 position {x,y} (can be "nopos")
+% #3 position {x,y} (can be "null")
 % #4 label {label_of_the_task}
 % #5 number of input sockets (can be 0)
 % #6 number of output sockets (can be 0)
 % #7 number of forward sockets (can be 0)
-% #8 a list of attributes (can be {"rev", "seq", "noattr"})
+% #8 a list of attributes (can be {"rev", "seq", "null"})
 \newcommand{\task}[8]{
   % parse arguments
   \def\tskid{#2}
@@ -145,7 +145,7 @@
     }{
       \pgfmathsetmacro{\curattr}{{#8}[\i]}
     }
-    \ifthenelse{\equal{\curattr}{noattr}} {
+    \ifthenelse{\equal{\curattr}{null}} {
       \breakforeach
     }{
       \ifthenelse{\equal{\curattr}{rev}} {
@@ -180,8 +180,8 @@
 
   % draw task
   \def\tskpos{#3}
-  \ifthenelse{\equal{\tskpos}{\string "nopos"}} {
-    \ifthenelse{\equal{#1}{\string "noopt"}} {
+  \ifthenelse{\equal{\tskpos}{\string "null"}} {
+    \ifthenelse{\equal{#1}{\string "null"}} {
       \node[\tskstyle, align=center, minimum height=\tskrealminheight] (\tskid) {\tsklabl};
     }{
       \node[\tskstyle, align=center, minimum height=\tskrealminheight, #1] (\tskid) {\tsklabl};
@@ -189,7 +189,7 @@
   }{
     \pgfmathsetmacro{\tskposx}{{#3}[0]}
     \pgfmathsetmacro{\tskposy}{{#3}[1]}
-    \ifthenelse{\equal{#1}{\string "noopt"}} {
+    \ifthenelse{\equal{#1}{\string "null"}} {
       \node[\tskstyle, align=center, minimum height=\tskrealminheight] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
     }{
       \node[\tskstyle, align=center, minimum height=\tskrealminheight, #1] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
@@ -265,7 +265,7 @@
   \@ifundefined{@mdl@#1}{#3}{#2}%
 }
 
-% #1 node options (can be "noopt")
+% #1 node options (can be "null")
 % #2 list of tasks {t0, t1, t2, ...}
 % #3 id {mi}
 % #4 label {label_of_the_module}
@@ -306,14 +306,14 @@
   \def\@mdl@#3{\tids}; % defined for the sequence optimization
 
   % start drawing
-  \ifthenelse{\equal{#1}{\string "noopt"}} {
+  \ifthenelse{\equal{#1}{\string "null"}} {
     \node[module, label={[Paired-3,align=center]below:\mdllabl}, fit=\tids] (\mdlid) {};
   }{
     \node[module, label={[Paired-3,align=center]below:\mdllabl}, fit=\tids, #1] (\mdlid) {};
   }
 }
 
-% #1 node options (can be "noopt")
+% #1 node options (can be "null")
 % #2 list of tasks of modules {t0, m1, t2, ...}
 % #3 id {si}
 % #4 label {label_of_the_sequence}
@@ -357,7 +357,7 @@
   \def\seqlabl{#4};
 
   % start drawing
-  \ifthenelse{\equal{#1}{\string "noopt"}} {
+  \ifthenelse{\equal{#1}{\string "null"}} {
     \node[seq, label={[Paired-11,align=center]below:\seqlabl}, fit=\ids] (\seqid) {};
   }{
     \node[seq, label={[Paired-11,align=center]below:\seqlabl}, fit=\ids, #1] (\seqid) {};

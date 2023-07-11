@@ -8,25 +8,25 @@
     %%%%%%%%%%%%%%%%%%%%%%
     %% create the tasks %%
     %%%%%%%%%%%%%%%%%%%%%%
-    %     options                          id   coords    label               sin sout sfwd attributes
-    %     -------                          --   ------    -----               --- ---- ---- ----------
-    \task {"noopt"}                        {t1} {0, 0}    {$t_1$}             {0} {2}  {0}  {"seq"};
-    \task {right=1.0cm of t1}              {t2} {"nopos"} {$t_2$}             {1} {0}  {1}  {"noattr"};
-    \task {right=1.0cm of t2}              {t3} {"nopos"} {$t_3$}             {1} {1}  {0}  {"noattr"};
-    \task {right=1.0cm of t3}              {t4} {"nopos"} {big task\\($t_4$)} {2} {3}  {0}  {"seq"};
-    \task {right=1.0cm of t4}              {t5} {"nopos"} {$t_5$}             {2} {1}  {0}  {"noattr"};
-    \task {below=2.5cm of t5, xshift=-2cm} {t6} {"nopos"} {$t_6$}             {2} {3}  {0}  {"rev","seq"};
-    \task {left =1.0cm of t6}              {t7} {"nopos"} {$t_7$}             {1} {0}  {2}  {"rev"};
-    \task {left =1.0cm of t7}              {t8} {"nopos"} {$t_8$}             {2} {0}  {0}  {"rev"};
+    %     options                          id   coords   label               sin sout sfwd attributes
+    %     -------                          --   ------   -----               --- ---- ---- ----------
+    \task {"null"}                         {t1} {0, 0}   {$t_1$}             {0} {2}  {0}  {"seq"};
+    \task {right=1.0cm of t1}              {t2} {"null"} {$t_2$}             {1} {0}  {1}  {"null"};
+    \task {right=1.0cm of t2}              {t3} {"null"} {$t_3$}             {1} {1}  {0}  {"null"};
+    \task {right=1.0cm of t3}              {t4} {"null"} {big task\\($t_4$)} {2} {3}  {0}  {"seq"};
+    \task {right=1.0cm of t4}              {t5} {"null"} {$t_5$}             {2} {1}  {0}  {"null"};
+    \task {below=2.5cm of t5, xshift=-2cm} {t6} {"null"} {$t_6$}             {2} {3}  {0}  {"rev","seq"};
+    \task {left =1.0cm of t6}              {t7} {"null"} {$t_7$}             {1} {0}  {2}  {"rev"};
+    \task {left =1.0cm of t7}              {t8} {"null"} {$t_8$}             {2} {0}  {0}  {"rev"};
 
     %%%%%%%%%%%%%%%%%%%%%%%%
     %% create the modules %%
     %%%%%%%%%%%%%%%%%%%%%%%%
-    %       options   task ids         id   label
-    %       -------   --------         --   -----
-    \module {"noopt"} {"t1"}           {m1} {$M_1$};
-    \module {"noopt"} {"t2"}           {m2} {$M_2$};
-    \module {"noopt"} {"t3","t4","t5"} {m3} {$M_3$};
+    %       options  task ids         id   label
+    %       -------  --------         --   -----
+    \module {"null"} {"t1"}           {m1} {$M_1$};
+    \module {"null"} {"t2"}           {m2} {$M_2$};
+    \module {"null"} {"t3","t4","t5"} {m3} {$M_3$};
 
     %%%%%%%%%%%%%%%%%%%%
     %% bind the tasks %%
