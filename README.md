@@ -10,4 +10,8 @@ cd examples
 pdflatex sequence_chain.tex
 ```
 
-Enjoy!
+It will produce the following graph.
+
+![Sequence Chain](examples/sequence_chain.svg)
+
+**Enjoy!**
