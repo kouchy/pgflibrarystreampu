@@ -51,20 +51,15 @@
     %%%%%%%%%%%%%%%%%%%
     %% create stages %%
     %%%%%%%%%%%%%%%%%%%
-    %      options                                       object ids       id   label
-    %      -------                                       ----------       --   -----
-    \stage [minimum height=3.00cm]                       {"m1","m2","t3"} {s1} {Stage 1}
-    \stage [minimum width=4.50cm, minimum height=3.00cm] {"t4","t5"}      {s2} {Stage 2}
-    \stage [minimum width=5.75cm, minimum height=2.25cm] {"t6","t7","t8"} {s3} {Stage 3}
+    %      options                                       object ids       id   label     n threads
+    %      -------                                       ----------       --   -----     ---------
+    \stage [minimum height=3.00cm]                       {"m1","m2","t3"} {s1} {Stage 1} {2}
+    \stage [minimum width=4.50cm, minimum height=3.00cm] {"t4","t5"}      {s2} {Stage 2} {1}
+    \stage [minimum width=5.75cm, minimum height=2.25cm] {"t6","t7","t8"} {s3} {Stage 3} {4}
 
     %%%%%%%%%%%%%%%%%%%%%
     %% draw the legend %%
     %%%%%%%%%%%%%%%%%%%%%
-    \legend {(-1.00,1.25)}
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% bonus: draw a thread %%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%
-    \thread {(-1,-0.25)}{0.5}{th1};
+    \legend {(-1.0,1.5)}
   \end{tikzpicture}
 \end{document}

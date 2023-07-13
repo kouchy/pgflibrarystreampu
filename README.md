@@ -14,4 +14,4 @@ It will produce the following graph.
 
 ![Sequence Chain](examples/sequence_chain.svg)
 
-**Enjoy!**
+Enjoy!
