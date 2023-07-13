@@ -11,7 +11,17 @@
 % \usepackage{mathptmx}
 
 \usepackage{tikz}
-\usetikzlibrary{matrix, positioning, fit, patterns, shapes, arrows, shapes.multipart, decorations.pathmorphing, calc, shapes.geometric}
+\usetikzlibrary{matrix,
+                positioning,
+                fit,
+                patterns,
+                shapes,
+                arrows,
+                shapes.multipart,
+                decorations.pathmorphing,
+                calc,
+                shapes.geometric,
+                backgrounds}
 
 \usepackage{color}
 
@@ -105,14 +115,16 @@
 \newcommand{\sckshdwsize}{0.25cm}
 \newcommand{\thrshdwsize}{0.20cm}
 
-\tikzset{ task/.style    = {draw=Paired-1,  rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize, inner sep=0.3cm} }
-\tikzset{ stask/.style   = {draw=Paired-1,  rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize, inner sep=0.3cm, fill=Paired-1!20} }
-\tikzset{ seq/.style     = {draw=Paired-11, rounded corners=2pt, densely dashed} }
-\tikzset{ subseq/.style  = {draw=Paired-9,  rounded corners=2pt} }
-\tikzset{ pip/.style     = {draw=Dark2-8,   dotted, thick, rounded corners=2pt} }
-\tikzset{ sin/.style     = {draw=Paired-7,  circle, minimum width=\scksize, text=Paired-7!80!black, preaction={fill=white}, pattern=north east lines, pattern color=Paired-7} }
-\tikzset{ sout/.style    = {draw=Paired-5,  circle, minimum width=\scksize, text=Paired-5!80!black, preaction={fill=white}, pattern=crosshatch dots, pattern color=Paired-5} }
-\tikzset{ sfwd/.style    = {draw=Dark2-7,   circle, minimum width=\scksize, text=Dark2-7!80!black,  preaction={fill=white}, pattern=grid, pattern color=Dark2-7} }
+\tikzset{ task/.style    = {draw=Paired-1, rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize, inner sep=0.3cm, fill=white} }
+\tikzset{ stask/.style   = {draw=Paired-1, rounded corners=0pt, text=Paired-1, minimum height=\tskminsize, minimum width=\tskminsize, inner sep=0.3cm, fill=Paired-1!20} }
+\tikzset{ seq/.style     = {draw=Paired-11,rounded corners=2pt, densely dashed} }
+\tikzset{ subseq/.style  = {draw=Paired-9, rounded corners=2pt} }
+\tikzset{ pip/.style     = {draw=Dark2-8,  dotted, thick, rounded corners=2pt} }
+\tikzset{ sin/.style     = {draw=Paired-7, circle, minimum width=\scksize, text=Paired-7!80!black, preaction={fill=white}, pattern=north east lines, pattern color=Paired-7} }
+\tikzset{ sout/.style    = {draw=Paired-5, circle, minimum width=\scksize, text=Paired-5!80!black, preaction={fill=white}, pattern=crosshatch dots, pattern color=Paired-5} }
+\tikzset{ sfwd/.style    = {draw=Dark2-7,  circle, minimum width=\scksize, text=Dark2-7!80!black,  preaction={fill=white}, pattern=grid, pattern color=Dark2-7} }
+\tikzset{ taskcln/.style = {draw=gray!30!white} }
+\tikzset{ scln/.style    = {draw=gray!30!white, fill=white} }
 \tikzset{ sinlbl/.style  = {text=Paired-7!80!black, font=\footnotesize} }
 \tikzset{ soutlbl/.style = {text=Paired-5!80!black, font=\footnotesize} }
 \tikzset{ sfwdlbl/.style = {text=Dark2-7!80!black,  font=\footnotesize} }
@@ -290,6 +302,78 @@
 
 \long\def\@moduledefined#1#2#3{%
   \@ifundefined{@mdl@#1}{#3}{#2}%
+}
+
+% #1 node options (optional parameter)
+% #2 list of tasks {t0, t1, t2, ...}
+% #3 number of clones
+\newcommand{\clone}[3][]{
+  % parse arguments
+  \pgfmathsetmacro{\ntsk}{dim(#2)}
+  \def\nclones{#3};
+  \pgfmathsetmacro{\ntskmone}{int(\ntsk - 1)}
+  \foreach \i in {0,...,\ntskmone}{
+    \ifthenelse{\ntskmone=0}{
+      \pgfmathsetmacro{\curtsk}{#2}
+    }{
+      \pgfmathsetmacro{\curtsk}{{#2}[\i]}
+    }
+    % \xdef\tids{\tids (\curtsk)}
+
+
+    \ifthenelse{\equal{\nclones}{}} {}
+    {
+      \ifnum \numexpr\nclones > 0
+        \foreach \c in {0,...,\nclones}{
+
+          \pgfmathsetmacro{\cid}{\nclones-\c}
+          \pgfmathsetmacro{\clnshft}{(\cid)*0.075cm}
+
+          \ifthenelse{\equal{#1}{}} {
+            \begin{scope}[on background layer]
+              \path let
+                \p1=(\curtsk),
+                \p1=($(\curtsk.west)-(\curtsk.east)$),
+                \p2=($(\curtsk.north)-(\curtsk.south)$),
+                \n1={veclen(\p1)-\pgflinewidth},
+                \n2={veclen(\p2)-\pgflinewidth},
+                in node [task, taskcln, at=(\curtsk), minimum width=\n1, minimum height=\n2, inner sep=0.0cm, xshift=\clnshft, yshift=\clnshft] (\curtsk_cln\cid) {};
+            \end{scope}
+          }{
+            \begin{scope}[on background layer]
+              \path let
+                \p1=(\curtsk),
+                \p1=($(\curtsk.west)-(\curtsk.east)$),
+                \p2=($(\curtsk.north)-(\curtsk.south)$),
+                \n1={veclen(\p1)-\pgflinewidth},
+                \n2={veclen(\p2)-\pgflinewidth},
+                in node [task, taskcln, at=(\curtsk), minimum width=\n1, minimum height=\n2, inner sep=0.0cm, xshift=\clnshft, yshift=\clnshft, #1] (\curtsk_cln\cid) {};
+            \end{scope}
+          }
+          % loop over input sockets
+          \foreach \si in {1,...,100}{
+            \@nodedefined{\curtsk_si\si}{
+              \begin{scope}[on background layer]
+                \node[sin, scln, at=(\curtsk_si\si), xshift=\clnshft, yshift=\clnshft] (\curtsk_si\si_cln\cid) {};
+              \end{scope}
+            }{
+              \breakforeach
+            }
+          }
+          % loop over output sockets
+          \foreach \so in {1,...,100}{
+            \@nodedefined{\curtsk_so\so}{
+              \begin{scope}[on background layer]
+                \node[sout, scln, at=(\curtsk_so\so), xshift=\clnshft, yshift=\clnshft] (\curtsk_so\so_cln\cid) {};
+              \end{scope}
+            }{
+              \breakforeach
+            }
+          }
+        }
+      \fi
+    }
+  }
 }
 
 % #1 node options (optional parameter)

@@ -19,6 +19,14 @@
     \task [left =1.0cm of t6]              {t7} {}      {$t_7$}             {1} {0}  {2}  {"rev","sckn"};
     \task [left =1.0cm of t7]              {t8} {}      {$t_8$}             {2} {0}  {0}  {"rev"};
 
+    %%%%%%%%%%%%%%%%%%%%%
+    %% clone the tasks %%
+    %%%%%%%%%%%%%%%%%%%%%
+    %      options  task ids          n clones
+    %      -------  --------          --------
+    \clone []       {"t1","t2","t3"} {1}
+    \clone []       {"t6","t7","t8"} {3}
+
     %%%%%%%%%%%%%%%%%%%%
     %% create modules %%
     %%%%%%%%%%%%%%%%%%%%
@@ -55,7 +63,7 @@
     %      -------                                       ----------       --   -----     ---------
     \stage [minimum height=3.00cm]                       {"m1","m2","t3"} {s1} {Stage 1} {2}
     \stage [minimum width=4.50cm, minimum height=3.00cm] {"t4","t5"}      {s2} {Stage 2} {1}
-    \stage [minimum width=5.75cm, minimum height=2.25cm] {"t6","t7","t8"} {s3} {Stage 3} {4}
+    \stage [minimum width=5.75cm, minimum height=2.75cm] {"t6","t7","t8"} {s3} {Stage 3} {4}
 
     %%%%%%%%%%%%%%%%%%%%%
     %% draw the legend %%
