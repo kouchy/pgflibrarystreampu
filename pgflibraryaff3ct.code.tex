@@ -11,16 +11,10 @@
 % \usepackage{mathptmx}
 
 \usepackage{tikz}
-\usetikzlibrary{matrix,
-                positioning,
+\usetikzlibrary{positioning,
                 fit,
                 patterns,
-                shapes,
-                arrows,
-                shapes.multipart,
-                decorations.pathmorphing,
                 calc,
-                shapes.geometric,
                 backgrounds}
 
 \usepackage{color}
@@ -135,7 +129,7 @@
 \tikzset{ module/.style  = {draw=Paired-3,  dashed, rounded corners=2pt} }
 \tikzset{ bind/.style    = {->,>=latex} }
 \tikzset{ bindfwd/.style = {->,>=latex,draw=Dark2-7, densely dashdotted} }
-\tikzset{ inv/.style     = {} }
+\tikzset{ inv/.style     = {draw=none, fill=none, opacity=0} }
 
 % #1 node options (optional parameter)
 % #2 id {ti}
@@ -326,8 +320,7 @@
     \ifthenelse{\equal{\nclones}{}} {}
     {
       \ifnum \numexpr\nclones > 0
-        \foreach \c in {0,...,\nclones}{
-
+        \foreach \c in {1,...,\nclones}{
           \pgfmathsetmacro{\cid}{\nclones-\c}
           \pgfmathsetmacro{\clnshft}{(\cid)*0.075cm}
 
@@ -352,6 +345,14 @@
                 in node [task, taskcln, at=(\curtsk), minimum width=\n1, minimum height=\n2, inner sep=0.0cm, xshift=\clnshft, yshift=\clnshft, #1] (\curtsk_cln\cid) {};
             \end{scope}
           }
+          %hack
+          \path let
+            \p1=(\curtsk),
+            \p1=($(\curtsk.west)-(\curtsk.east)$),
+            \p2=($(\curtsk.north)-(\curtsk.south)$),
+            \n1={veclen(\p1)-\pgflinewidth},
+            \n2={veclen(\p2)-\pgflinewidth},
+            in node [task, taskcln, inv, at=(\curtsk), minimum width=\n1, minimum height=\n2, inner sep=0.0cm, xshift=\clnshft, yshift=\clnshft] (\curtsk clnn\c) {};
 
           % loop over input sockets
           \foreach \si in {1,...,100}{
@@ -365,13 +366,15 @@
               }
               \ifthenelse{\equal{#1}{}} {
                 \begin{scope}[on background layer]
-                  \node[\sckstya, \sckstyb, at=(\curtsk_si\si), xshift=\clnshft, yshift=\clnshft] (\curtsk_si\si_cln\cid) {};
+                  \node[\sckstya, \sckstyb, at=(\curtsk_si\si), xshift=\clnshft, yshift=\clnshft] (\curtsk_cln\cid_si\si) {};
                 \end{scope}
               }{
                 \begin{scope}[on background layer]
-                  \node[\sckstya, \sckstyb, at=(\curtsk_si\si), xshift=\clnshft, yshift=\clnshft, #1] (\curtsk_si\si_cln\cid) {};
+                  \node[\sckstya, \sckstyb, at=(\curtsk_si\si), xshift=\clnshft, yshift=\clnshft, #1] (\curtsk_cln\cid_si\si) {};
                 \end{scope}
               }
+              %hack
+              \node[\sckstya, \sckstyb, inv, at=(\curtsk_si\si), xshift=\clnshft, yshift=\clnshft] (\curtsk clnn\c si\si) {};
             }{
               \breakforeach
             }
@@ -389,13 +392,15 @@
               }
               \ifthenelse{\equal{#1}{}} {
                 \begin{scope}[on background layer]
-                  \node[\sckstya, \sckstyb, at=(\curtsk_so\so), xshift=\clnshft, yshift=\clnshft] (\curtsk_so\so_cln\cid) {};
+                  \node[\sckstya, \sckstyb, at=(\curtsk_so\so), xshift=\clnshft, yshift=\clnshft] (\curtsk_cln\cid_so\so) {};
                 \end{scope}
               }{
                 \begin{scope}[on background layer]
-                  \node[\sckstya, \sckstyb, at=(\curtsk_so\so), xshift=\clnshft, yshift=\clnshft, #1] (\curtsk_so\so_cln\cid) {};
+                  \node[\sckstya, \sckstyb, at=(\curtsk_so\so), xshift=\clnshft, yshift=\clnshft, #1] (\curtsk_cln\cid_so\so) {};
                 \end{scope}
               }
+              %hack
+              \node[\sckstya, \sckstyb, inv, at=(\curtsk_so\so), xshift=\clnshft, yshift=\clnshft] (\curtsk clnn\c so\so) {};
             }{
               \breakforeach
             }
@@ -423,6 +428,32 @@
     }
     \xdef\tids{\tids (\curtsk)}
 
+    % loop over task clones
+    \def\tclnids{};
+    \foreach \cid in {1,...,100}{
+      \@nodedefined{\curtsk clnn\cid}{
+        \xdef\tclnids{\tclnids (\curtsk clnn\cid)}
+        \def\sclnids{};
+        \foreach \si in {1,...,100}{
+          \@nodedefined{\curtsk clnn\cid si\si}{
+            \xdef\sclnids{\sclnids (\curtsk clnn\cid si\si)}
+          }{
+            \breakforeach
+          }
+        }
+        \foreach \so in {1,...,100}{
+          \@nodedefined{\curtsk clnn\cid so\so}{
+            \xdef\sclnids{\sclnids (\curtsk clnn\cid so\so)}
+          }{
+            \breakforeach
+          }
+        }
+        \xdef\tclnids{\tclnids \sclnids}
+      }{
+        \breakforeach
+      }
+    }
+
     % loop over input sockets
     \def\sids{};
     \foreach \si in {1,...,100}{
@@ -432,6 +463,7 @@
         \breakforeach
       }
     }
+
     % loop over output sockets
     \foreach \so in {1,...,100}{
       \@nodedefined{\curtsk_so\so}{
@@ -440,7 +472,7 @@
         \breakforeach
       }
     }
-    \xdef\tids{\tids \sids}
+    \xdef\tids{\tids \sids \tclnids}
   }
   \def\mdlid{#3};
   \def\mdllabl{#4};
@@ -475,6 +507,32 @@
     \@moduledefined{\curobj}{
       \xdef\ids{\ids \@mdl@\curobj}
     }{
+      % loop over task clones
+      \def\tclnids{};
+      \foreach \cid in {1,...,100}{
+        \@nodedefined{\curobj clnn\cid}{
+          \xdef\tclnids{\tclnids (\curobj clnn\cid)}
+          \def\sclnids{};
+          \foreach \si in {1,...,100}{
+            \@nodedefined{\curobj clnn\cid si\si}{
+              \xdef\sclnids{\sclnids (\curobj clnn\cid si\si)}
+            }{
+              \breakforeach
+            }
+          }
+          \foreach \so in {1,...,100}{
+            \@nodedefined{\curobj clnn\cid so\so}{
+              \xdef\sclnids{\sclnids (\curobj clnn\cid so\so)}
+            }{
+              \breakforeach
+            }
+          }
+          \xdef\tclnids{\tclnids \sclnids}
+        }{
+          \breakforeach
+        }
+      }
+
       % loop over input sockets
       \def\sids{};
       \foreach \si in {1,...,100}{
@@ -492,7 +550,7 @@
           \breakforeach
         }
       }
-      \xdef\ids{\ids \sids}
+      \xdef\ids{\ids \sids \tclnids}
     }
   }
   \def\seqid{#3};
