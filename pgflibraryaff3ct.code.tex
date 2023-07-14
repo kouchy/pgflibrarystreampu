@@ -123,8 +123,10 @@
 \tikzset{ sin/.style     = {draw=Paired-7, circle, minimum width=\scksize, text=Paired-7!80!black, preaction={fill=white}, pattern=north east lines, pattern color=Paired-7} }
 \tikzset{ sout/.style    = {draw=Paired-5, circle, minimum width=\scksize, text=Paired-5!80!black, preaction={fill=white}, pattern=crosshatch dots, pattern color=Paired-5} }
 \tikzset{ sfwd/.style    = {draw=Dark2-7,  circle, minimum width=\scksize, text=Dark2-7!80!black,  preaction={fill=white}, pattern=grid, pattern color=Dark2-7} }
-\tikzset{ taskcln/.style = {draw=gray!30!white} }
-\tikzset{ scln/.style    = {draw=gray!30!white, fill=white} }
+\tikzset{ taskcln/.style = {draw=Paired-1!30!white} }
+\tikzset{ sincln/.style  = {draw=Paired-7!30!white, preaction={fill=white}, pattern=north east lines, pattern color=Paired-7!30!white} }
+\tikzset{ soutcln/.style = {draw=Paired-5!30!white, preaction={fill=white}, pattern=crosshatch dots, pattern color=Paired-5!30!white} }
+\tikzset{ sfwdcln/.style = {draw=Dark2-7!30!white,  preaction={fill=white}, pattern=grid, pattern color=Dark2-7!30!white} }
 \tikzset{ sinlbl/.style  = {text=Paired-7!80!black, font=\footnotesize} }
 \tikzset{ soutlbl/.style = {text=Paired-5!80!black, font=\footnotesize} }
 \tikzset{ sfwdlbl/.style = {text=Dark2-7!80!black,  font=\footnotesize} }
@@ -133,6 +135,7 @@
 \tikzset{ module/.style  = {draw=Paired-3,  dashed, rounded corners=2pt} }
 \tikzset{ bind/.style    = {->,>=latex} }
 \tikzset{ bindfwd/.style = {->,>=latex,draw=Dark2-7, densely dashdotted} }
+\tikzset{ inv/.style     = {} }
 
 % #1 node options (optional parameter)
 % #2 id {ti}
@@ -236,6 +239,7 @@
         }{}
       \else
         \node[sfwd, at=(\tskid.\tsksiside), yshift=\sckiyshift] (\tskid_si\sckiid) {};
+        \node[inv, at=(\tskid_si\sckiid.center)] (\tskid_si\sckiid_fwd) {};
         \ifthenelse{\equal{\scknum}{yes}} {
           \node[sckshdw, at=(\tskid.\tsksiside), yshift=\sckiyshift] (\tskid_si\sckiid_shdw) {};
           \node[sfwdlbl, at=(\tskid_si\sckiid.center)] (\tskid_si\sckiid_lbl) {\sckiid};
@@ -261,6 +265,7 @@
         }{}
       \else
         \node[sfwd, at=(\tskid.\tsksoside), yshift=\sckoyshift] (\tskid_so\sckoid) {};
+        \node[inv, at=(\tskid_so\sckoid.center)] (\tskid_so\sckoid_fwd) {};
         \ifthenelse{\equal{\scknum}{yes}} {
           \node[sckshdw, at=(\tskid.\tsksoside), yshift=\sckoyshift] (\tskid_so\sckoid_shdw) {};
           \node[sfwdlbl, at=(\tskid_so\sckoid.center)] (\tskid_so\sckoid_lbl) {\sckoid};
@@ -318,9 +323,6 @@
     }{
       \pgfmathsetmacro{\curtsk}{{#2}[\i]}
     }
-    % \xdef\tids{\tids (\curtsk)}
-
-
     \ifthenelse{\equal{\nclones}{}} {}
     {
       \ifnum \numexpr\nclones > 0
@@ -350,22 +352,50 @@
                 in node [task, taskcln, at=(\curtsk), minimum width=\n1, minimum height=\n2, inner sep=0.0cm, xshift=\clnshft, yshift=\clnshft, #1] (\curtsk_cln\cid) {};
             \end{scope}
           }
+
           % loop over input sockets
           \foreach \si in {1,...,100}{
             \@nodedefined{\curtsk_si\si}{
-              \begin{scope}[on background layer]
-                \node[sin, scln, at=(\curtsk_si\si), xshift=\clnshft, yshift=\clnshft] (\curtsk_si\si_cln\cid) {};
-              \end{scope}
+              \@nodedefined{\curtsk_si\si_fwd}{
+                \def\sckstya{sfwd};
+                \def\sckstyb{sfwdcln};
+              }{
+                \def\sckstya{sin};
+                \def\sckstyb{sincln};
+              }
+              \ifthenelse{\equal{#1}{}} {
+                \begin{scope}[on background layer]
+                  \node[\sckstya, \sckstyb, at=(\curtsk_si\si), xshift=\clnshft, yshift=\clnshft] (\curtsk_si\si_cln\cid) {};
+                \end{scope}
+              }{
+                \begin{scope}[on background layer]
+                  \node[\sckstya, \sckstyb, at=(\curtsk_si\si), xshift=\clnshft, yshift=\clnshft, #1] (\curtsk_si\si_cln\cid) {};
+                \end{scope}
+              }
             }{
               \breakforeach
             }
           }
+
           % loop over output sockets
           \foreach \so in {1,...,100}{
             \@nodedefined{\curtsk_so\so}{
-              \begin{scope}[on background layer]
-                \node[sout, scln, at=(\curtsk_so\so), xshift=\clnshft, yshift=\clnshft] (\curtsk_so\so_cln\cid) {};
-              \end{scope}
+              \@nodedefined{\curtsk_so\so_fwd}{
+                \def\sckstya{sfwd};
+                \def\sckstyb{sfwdcln};
+              }{
+                \def\sckstya{sout};
+                \def\sckstyb{soutcln};
+              }
+              \ifthenelse{\equal{#1}{}} {
+                \begin{scope}[on background layer]
+                  \node[\sckstya, \sckstyb, at=(\curtsk_so\so), xshift=\clnshft, yshift=\clnshft] (\curtsk_so\so_cln\cid) {};
+                \end{scope}
+              }{
+                \begin{scope}[on background layer]
+                  \node[\sckstya, \sckstyb, at=(\curtsk_so\so), xshift=\clnshft, yshift=\clnshft, #1] (\curtsk_so\so_cln\cid) {};
+                \end{scope}
+              }
             }{
               \breakforeach
             }
@@ -496,8 +526,8 @@
   \sequence[#1]{#2}{#3}{#4}{#5}
 }
 
-\newcommand{\legend}[1]{
-  \begin{scope}[shift={#1}]
+\newcommand{\legend}[1][]{
+  \begin{scope}[#1]
     \node[draw=Paired-1, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-1, label={right:Parallel task}] (l1) at (+0.0, 1.9) {};
     \node[draw=Paired-1, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-1, fill=Paired-1!20, label={right:Sequential task}] (l2) at (+0.0, 1.4) {};
     \node[draw=Paired-3, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-3, dashed, label={right:Module}] (l3) at (+0.0, 0.9) {};
@@ -512,8 +542,8 @@
   \end{scope}
 }
 
-\newcommand{\thread}[3]{
-  \begin{scope}[shift={#1},scale=#2]
-    \draw[thick] plot [smooth,tension=0.7] coordinates {(0,1) (0.15,0.875) (-0.1,0.625) (0.2,0.25) (0,0)} node (#3){};
+\newcommand{\thread}[2][]{
+  \begin{scope}[#1]
+    \draw[thick] plot [smooth,tension=0.7] coordinates {(0,1) (0.15,0.875) (-0.1,0.625) (0.2,0.25) (0,0)} node (#2){};
   \end{scope}
 }
