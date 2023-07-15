@@ -201,19 +201,11 @@
   % draw task
   \def\tskpos{#3}
   \ifthenelse{\equal{\tskpos}{}} {
-    \ifthenelse{\equal{#1}{}} {
-      \node[\tskstyle, align=center, minimum height=\tskrealminheight] (\tskid) {\tsklabl};
-    }{
-      \node[\tskstyle, align=center, minimum height=\tskrealminheight, #1] (\tskid) {\tsklabl};
-    }
+    \node[\tskstyle, align=center, minimum height=\tskrealminheight,#1] (\tskid) {\tsklabl};
   }{
     \pgfmathsetmacro{\tskposx}{{#3}[0]}
     \pgfmathsetmacro{\tskposy}{{#3}[1]}
-    \ifthenelse{\equal{#1}{}} {
-      \node[\tskstyle, align=center, minimum height=\tskrealminheight] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
-    }{
-      \node[\tskstyle, align=center, minimum height=\tskrealminheight, #1] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
-    }
+    \node[\tskstyle, align=center, minimum height=\tskrealminheight,#1] (\tskid) at (\tskposx,\tskposy) {\tsklabl};
   }
 
   % draw input (+ fwd) socket
@@ -229,7 +221,7 @@
         \node[sin, at=(\tskid.\tsksiside), yshift=\sckiyshift] (\tskid_si\sckiid) {};
         \ifthenelse{\equal{\scknum}{yes}} {
           \node[sckshdw, at=(\tskid.\tsksiside), yshift=\sckiyshift] (\tskid_si\sckiid_shdw) {};
-          \node[sinlbl, at=(\tskid_si\sckiid.center)] (\tskid_si\sckiid_lbl) {\sckiid};
+          \node[sinlbl,  at=(\tskid_si\sckiid.center)] (\tskid_si\sckiid_lbl) {\sckiid};
         }{}
       \else
         \node[sfwd, at=(\tskid.\tsksiside), yshift=\sckiyshift] (\tskid_si\sckiid) {};
@@ -295,6 +287,30 @@
   \fi
 }
 
+% #1 node options (optional parameter)
+% #2 id {ti}
+% #3 position {x,y} (can be empty)
+% #4 label {label_of_the_task}
+% #5 number of paths (can't be 0)
+% #6 a list of attributes (can be {"rev"} and can also be empty)
+\newcommand{\select}[6][]{
+  \ifnum \numexpr #5 > 0
+    \task [thick,densely dashdotted,#1] {#2} {#3} {#4} {#5} {1} {0} {#6,"sckn"};
+  \fi
+}
+
+% #1 node options (optional parameter)
+% #2 id {ti}
+% #3 position {x,y} (can be empty)
+% #4 label {label_of_the_task}
+% #5 number of paths (can't be 0)
+% #6 a list of attributes (can be {"rev"} and can also be empty)
+\newcommand{\commute}[6][]{
+  \ifnum \numexpr #5 > 0
+    \task [thick,densely dashdotted,#1] {#2} {#3} {#4} {2} {#5} {0} {#6,"sckn"};
+  \fi
+}
+
 \long\def\@nodedefined#1#2#3{%
   \@ifundefined{pgf@sh@ns@#1}{#3}{#2}%
 }
@@ -321,38 +337,18 @@
     {
       \ifnum \numexpr\nclones > 0
         \foreach \c in {1,...,\nclones}{
-          \pgfmathsetmacro{\cid}{\nclones-\c}
-          \pgfmathsetmacro{\clnshft}{(\cid)*0.075cm}
+          \pgfmathsetmacro{\rc}{\nclones-\c}
+          \pgfmathsetmacro{\clnshft}{(\rc+1)*0.075cm}
 
-          \ifthenelse{\equal{#1}{}} {
-            \begin{scope}[on background layer]
-              \path let
-                \p1=(\curtsk),
-                \p1=($(\curtsk.west)-(\curtsk.east)$),
-                \p2=($(\curtsk.north)-(\curtsk.south)$),
-                \n1={veclen(\p1)-\pgflinewidth},
-                \n2={veclen(\p2)-\pgflinewidth},
-                in node [task, taskcln, at=(\curtsk), minimum width=\n1, minimum height=\n2, inner sep=0.0cm, xshift=\clnshft, yshift=\clnshft] (\curtsk_cln\cid) {};
-            \end{scope}
-          }{
-            \begin{scope}[on background layer]
-              \path let
-                \p1=(\curtsk),
-                \p1=($(\curtsk.west)-(\curtsk.east)$),
-                \p2=($(\curtsk.north)-(\curtsk.south)$),
-                \n1={veclen(\p1)-\pgflinewidth},
-                \n2={veclen(\p2)-\pgflinewidth},
-                in node [task, taskcln, at=(\curtsk), minimum width=\n1, minimum height=\n2, inner sep=0.0cm, xshift=\clnshft, yshift=\clnshft, #1] (\curtsk_cln\cid) {};
-            \end{scope}
-          }
-          %hack
-          \path let
-            \p1=(\curtsk),
-            \p1=($(\curtsk.west)-(\curtsk.east)$),
-            \p2=($(\curtsk.north)-(\curtsk.south)$),
-            \n1={veclen(\p1)-\pgflinewidth},
-            \n2={veclen(\p2)-\pgflinewidth},
-            in node [task, taskcln, inv, at=(\curtsk), minimum width=\n1, minimum height=\n2, inner sep=0.0cm, xshift=\clnshft, yshift=\clnshft] (\curtsk clnn\c) {};
+          \begin{scope}[on background layer]
+            \path let
+              \p1=(\curtsk),
+              \p1=($(\curtsk.west)-(\curtsk.east)$),
+              \p2=($(\curtsk.north)-(\curtsk.south)$),
+              \n1={veclen(\p1)-\pgflinewidth},
+              \n2={veclen(\p2)-\pgflinewidth},
+              in node [task, taskcln, at=(\curtsk), minimum width=\n1, minimum height=\n2, inner sep=0.0cm, xshift=\clnshft, yshift=\clnshft,#1] (\curtsk_cln\c) {};
+          \end{scope}
 
           % loop over input sockets
           \foreach \si in {1,...,100}{
@@ -364,17 +360,9 @@
                 \def\sckstya{sin};
                 \def\sckstyb{sincln};
               }
-              \ifthenelse{\equal{#1}{}} {
-                \begin{scope}[on background layer]
-                  \node[\sckstya, \sckstyb, at=(\curtsk_si\si), xshift=\clnshft, yshift=\clnshft] (\curtsk_cln\cid_si\si) {};
-                \end{scope}
-              }{
-                \begin{scope}[on background layer]
-                  \node[\sckstya, \sckstyb, at=(\curtsk_si\si), xshift=\clnshft, yshift=\clnshft, #1] (\curtsk_cln\cid_si\si) {};
-                \end{scope}
-              }
-              %hack
-              \node[\sckstya, \sckstyb, inv, at=(\curtsk_si\si), xshift=\clnshft, yshift=\clnshft] (\curtsk clnn\c si\si) {};
+              \begin{scope}[on background layer]
+                \node[\sckstya, \sckstyb, at=(\curtsk_si\si), xshift=\clnshft, yshift=\clnshft,#1] (\curtsk_cln\c_si\si) {};
+              \end{scope}
             }{
               \breakforeach
             }
@@ -390,17 +378,9 @@
                 \def\sckstya{sout};
                 \def\sckstyb{soutcln};
               }
-              \ifthenelse{\equal{#1}{}} {
-                \begin{scope}[on background layer]
-                  \node[\sckstya, \sckstyb, at=(\curtsk_so\so), xshift=\clnshft, yshift=\clnshft] (\curtsk_cln\cid_so\so) {};
-                \end{scope}
-              }{
-                \begin{scope}[on background layer]
-                  \node[\sckstya, \sckstyb, at=(\curtsk_so\so), xshift=\clnshft, yshift=\clnshft, #1] (\curtsk_cln\cid_so\so) {};
-                \end{scope}
-              }
-              %hack
-              \node[\sckstya, \sckstyb, inv, at=(\curtsk_so\so), xshift=\clnshft, yshift=\clnshft] (\curtsk clnn\c so\so) {};
+              \begin{scope}[on background layer]
+                \node[\sckstya, \sckstyb, at=(\curtsk_so\so), xshift=\clnshft, yshift=\clnshft,#1] (\curtsk_cln\c_so\so) {};
+              \end{scope}
             }{
               \breakforeach
             }
@@ -431,19 +411,19 @@
     % loop over task clones
     \def\tclnids{};
     \foreach \cid in {1,...,100}{
-      \@nodedefined{\curtsk clnn\cid}{
-        \xdef\tclnids{\tclnids (\curtsk clnn\cid)}
+      \@nodedefined{\curtsk_cln\cid}{
+        \xdef\tclnids{\tclnids (\curtsk_cln\cid)}
         \def\sclnids{};
         \foreach \si in {1,...,100}{
-          \@nodedefined{\curtsk clnn\cid si\si}{
-            \xdef\sclnids{\sclnids (\curtsk clnn\cid si\si)}
+          \@nodedefined{\curtsk_cln\cid_si\si}{
+            \xdef\sclnids{\sclnids (\curtsk_cln\cid_si\si)}
           }{
             \breakforeach
           }
         }
         \foreach \so in {1,...,100}{
-          \@nodedefined{\curtsk clnn\cid so\so}{
-            \xdef\sclnids{\sclnids (\curtsk clnn\cid so\so)}
+          \@nodedefined{\curtsk_cln\cid_so\so}{
+            \xdef\sclnids{\sclnids (\curtsk_cln\cid_so\so)}
           }{
             \breakforeach
           }
@@ -479,11 +459,7 @@
   \def\@mdl@#3{\tids}; % defined for the sequence optimization
 
   % start drawing
-  \ifthenelse{\equal{#1}{}} {
-    \node[module, label={[Paired-3,align=center]below:\mdllabl}, fit=\tids] (\mdlid) {};
-  }{
-    \node[module, label={[Paired-3,align=center]below:\mdllabl}, fit=\tids, #1] (\mdlid) {};
-  }
+  \node[module, label={[Paired-3,align=center]below:\mdllabl}, fit=\tids,#1] (\mdlid) {};
 }
 
 % #1 node options (optional parameter)
@@ -510,19 +486,19 @@
       % loop over task clones
       \def\tclnids{};
       \foreach \cid in {1,...,100}{
-        \@nodedefined{\curobj clnn\cid}{
-          \xdef\tclnids{\tclnids (\curobj clnn\cid)}
+        \@nodedefined{\curobj_cln\cid}{
+          \xdef\tclnids{\tclnids (\curobj_cln\cid)}
           \def\sclnids{};
           \foreach \si in {1,...,100}{
-            \@nodedefined{\curobj clnn\cid si\si}{
-              \xdef\sclnids{\sclnids (\curobj clnn\cid si\si)}
+            \@nodedefined{\curobj_cln\cid_si\si}{
+              \xdef\sclnids{\sclnids (\curobj_cln\cid_si\si)}
             }{
               \breakforeach
             }
           }
           \foreach \so in {1,...,100}{
-            \@nodedefined{\curobj clnn\cid so\so}{
-              \xdef\sclnids{\sclnids (\curobj clnn\cid so\so)}
+            \@nodedefined{\curobj_cln\cid_so\so}{
+              \xdef\sclnids{\sclnids (\curobj_cln\cid_so\so)}
             }{
               \breakforeach
             }
@@ -558,11 +534,7 @@
   \def\nthreads{#5};
 
   % start drawing
-  \ifthenelse{\equal{#1}{}} {
-    \node[seq, label={[Paired-11,align=center]below:\seqlabl}, fit=\ids] (\seqid) {};
-  }{
-    \node[seq, label={[Paired-11,align=center]below:\seqlabl}, fit=\ids, #1] (\seqid) {};
-  }
+  \node[seq, label={[Paired-11,align=center]below:\seqlabl}, fit=\ids,#1] (\seqid) {};
 
   % draw the threads
   \pgfmathtruncatemacro{\xlshft}{\nthreads*0.1cm}
@@ -588,20 +560,51 @@
   \begin{scope}[#1]
     \node[draw=Paired-1, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-1, label={right:Parallel task}] (l1) at (+0.0, 1.9) {};
     \node[draw=Paired-1, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-1, fill=Paired-1!20, label={right:Sequential task}] (l2) at (+0.0, 1.4) {};
-    \node[draw=Paired-3, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-3, dashed, label={right:Module}] (l3) at (+0.0, 0.9) {};
+    \node[draw=Paired-1, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-3, thick, densely dashdotted, label={right:Ctrl flow task}] (l3) at (+0.0, 0.9) {};
     \node[sin,  label={right:Input socket} ] (l4) at (+3.5, 1.9) {};
     \node[sout, label={right:Output socket}] (l5) at (+3.5, 1.4) {};
     \node[sfwd, label={right:Forward socket}] (l6) at (+3.5, 0.9) {};
     \node[draw=Paired-11, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, dashed, label={right:Sequence or pipeline stage}] (l7) at (+7.0, 1.9) {};
-    \node[] (l8) at (11.15, 1.9) {};
-    \draw[thick] plot [smooth,tension=0.7, xshift=7cm, yshift=1.25cm] coordinates {(0,0.375) (0.056,0.3228) (-0.0375,0.234) (0.075,0.093) (0,0)} node (l9){};
-    \node[] (l10) at (8.625, 1.4) {Software thread};
-    \node[draw, fit=(l1) (l2) (l3) (l4) (l5) (l6) (l7) (l8) (l10)] (legend) {};
+    \node[draw=Paired-3, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-3, dashed, label={right:Module}] (l8) at (+7.0, 1.4) {};
+    \node[] (l9) at (11.15, 1.9) {};
+    \draw[thick] plot [smooth,tension=0.7, xshift=7cm, yshift=0.7cm] coordinates {(0,0.375) (0.056,0.3228) (-0.0375,0.234) (0.075,0.093) (0,0)} node (l10){};
+    \node[] (l11) at (8.625, 0.9) {Software thread};
+    \node[draw, fit=(l1) (l2) (l3) (l4) (l5) (l6) (l7) (l8) (l9) (l11)] (legend) {};
   \end{scope}
 }
 
 \newcommand{\thread}[2][]{
   \begin{scope}[#1]
     \draw[thick] plot [smooth,tension=0.7] coordinates {(0,1) (0.15,0.875) (-0.1,0.625) (0.2,0.25) (0,0)} node (#2){};
+  \end{scope}
+}
+
+\newcommand{\merge}[2][]{
+  \begin{scope}[#1]
+    \def\sy{2.5cm}
+    \def\he{0.5cm}
+    \node (P0) at (0, \sy+\he) {};
+    \node (Pn) at (0, \sy-\he) {};
+
+    \node (Q) at (1.25cm, \sy+0cm) {};
+    \coordinate (Qf) at ([xshift=-0.25cm]Q.west); % we collect the edges in front of Q
+
+    \draw[->,thick,#2] (P0) .. controls (0.75,\sy+\he) and (0.25,\sy+0cm) .. (Qf) -- (Q); % (Q) is for a better line join
+    \draw[->,thick,#2] (Pn) .. controls (0.75,\sy-\he) and (0.25,\sy+0cm) .. (Qf) -- (Q); % (Q) is for a better line join
+  \end{scope}
+}
+
+\newcommand{\diverge}[2][]{
+  \begin{scope}[#1]
+    \def\sy{2.5cm}
+    \def\he{0.5cm}
+    \node (P0) at (1.25, \sy+\he) {};
+    \node (Pn) at (1.25, \sy-\he) {};
+
+    \node (Q) at (0cm, \sy+0cm) {};
+    \coordinate (Qf) at ([xshift=+0.25cm]Q.west); % we collect the edges in front of Q
+
+    \draw[<-,thick,#2] (P0) .. controls (0.15cm,\sy+\he) and (1cm,\sy+0cm) .. (Qf); % (Q) is for a better line join
+    \draw[<-,thick,#2] (Pn) .. controls (0.15,\sy-\he) and (1,\sy+0cm) .. (Qf); % (Q) is for a better line join
   \end{scope}
 }
