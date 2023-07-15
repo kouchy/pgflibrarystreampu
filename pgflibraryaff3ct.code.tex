@@ -295,7 +295,11 @@
 % #6 a list of attributes (can be {"rev"} and can also be empty)
 \newcommand{\select}[6][]{
   \ifnum \numexpr #5 > 0
-    \task [thick,densely dashdotted,#1] {#2} {#3} {#4} {#5} {1} {0} {#6,"sckn"};
+    \ifthenelse{\equal{#6}{}} {
+      \task [thick,densely dashdotted,#1] {#2} {#3} {#4} {#5} {1} {0} {"sckn"};
+    }{
+      \task [thick,densely dashdotted,#1] {#2} {#3} {#4} {#5} {1} {0} {"sckn",#6};
+    }
   \fi
 }
 
@@ -307,7 +311,11 @@
 % #6 a list of attributes (can be {"rev"} and can also be empty)
 \newcommand{\commute}[6][]{
   \ifnum \numexpr #5 > 0
-    \task [thick,densely dashdotted,#1] {#2} {#3} {#4} {2} {#5} {0} {#6,"sckn"};
+    \ifthenelse{\equal{#6}{}} {
+      \task [thick,densely dashdotted,#1] {#2} {#3} {#4} {2} {#5} {0} {"sckn"};
+    }{
+      \task [thick,densely dashdotted,#1] {#2} {#3} {#4} {2} {#5} {0} {"sckn",#6};
+    }
   \fi
 }
 
@@ -564,8 +572,8 @@
     \node[sin,  label={right:Input socket} ] (l4) at (+3.5, 1.9) {};
     \node[sout, label={right:Output socket}] (l5) at (+3.5, 1.4) {};
     \node[sfwd, label={right:Forward socket}] (l6) at (+3.5, 0.9) {};
-    \node[draw=Paired-11, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, dashed, label={right:Sequence or pipeline stage}] (l7) at (+7.0, 1.9) {};
-    \node[draw=Paired-3, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-3, dashed, label={right:Module}] (l8) at (+7.0, 1.4) {};
+    \node[draw=Paired-11, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, dashed, label={right:Sequence or pipeline stage}] (l7) at (+7.0, 1.4) {};
+    \node[draw=Paired-3, rounded corners=0pt, minimum height=0.3cm, minimum width=0.7cm, text=Paired-3, dashed, label={right:Module}] (l8) at (+7.0, 1.9) {};
     \node[] (l9) at (11.15, 1.9) {};
     \draw[thick] plot [smooth,tension=0.7, xshift=7cm, yshift=0.7cm] coordinates {(0,0.375) (0.056,0.3228) (-0.0375,0.234) (0.075,0.093) (0,0)} node (l10){};
     \node[] (l11) at (8.625, 0.9) {Software thread};
