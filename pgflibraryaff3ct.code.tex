@@ -403,7 +403,8 @@
 % #2 list of tasks {t0, t1, t2, ...}
 % #3 id {mi}
 % #4 label {label_of_the_module}
-\newcommand{\module}[4][]{
+% #5 a list of attributes (can be {"lbup"} and can also be empty)
+\newcommand{\module}[5][]{
   % parse arguments
   \pgfmathsetmacro{\ntsk}{dim(#2)}
   \def\tids{};
@@ -466,8 +467,31 @@
   \def\mdllabl{#4};
   \def\@mdl@#3{\tids}; % defined for the sequence optimization
 
+
+  % parse arguments
+  \def\islabelup{no}
+  \ifthenelse{\equal{#5}{}} {
+  }{
+    \pgfmathsetmacro{\nattr}{dim(#5)}
+    \pgfmathsetmacro{\nattrmone}{int(\nattr - 1)}
+    \foreach \i in {0,...,\nattrmone}{
+      \ifthenelse{\nattrmone=0}{
+        \pgfmathsetmacro{\curattr}{#5}
+      }{
+        \pgfmathsetmacro{\curattr}{{#5}[\i]}
+      }
+      \ifthenelse{\equal{\curattr}{lbup}} {
+        \xdef\islabelup{yes}
+      }{}
+    }
+  }
+
   % start drawing
-  \node[module, label={[Paired-3,align=center]below:\mdllabl}, fit=\tids,#1] (\mdlid) {};
+  \ifthenelse{\equal{\islabelup}{yes}} {
+    \node[module, label={[Paired-3,align=center]above:\mdllabl}, fit=\tids,#1] (\mdlid) {};
+  }{
+    \node[module, label={[Paired-3,align=center]below:\mdllabl}, fit=\tids,#1] (\mdlid) {};
+  }
 }
 
 % #1 node options (optional parameter)
@@ -545,8 +569,8 @@
   \node[seq, label={[Paired-11,align=center]below:\seqlabl}, fit=\ids,#1] (\seqid) {};
 
   % draw the threads
-  \pgfmathtruncatemacro{\xlshft}{\nthreads*0.1cm}
   \ifthenelse{\equal{\nthreads}{}} {} {
+    \pgfmathtruncatemacro{\xlshft}{\nthreads*0.1cm}
     \ifnum \numexpr\nthreads > 0
       \node[thrshdw, at=(\seqid.north), xshift=-0.075cm, minimum width=\xlshft*2+0.15cm] (\seqid_thr_shdw) {};
       \foreach \t in {1,...,\nthreads}{
