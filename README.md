@@ -1,6 +1,6 @@
-# PGFLibraryAFF3CT
+# PGFLibraryStreamPU
 
-This is a TikZ library to draw *beautiful* AFF3CT graphs in LaTeX ;-).
+This is a TikZ library to draw *beautiful* StreamPU graphs in LaTeX ;-).
 
 Some examples of use are given in the `examples` folder and they are detailed 
 in the following sections.
